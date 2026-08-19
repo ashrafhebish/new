@@ -1,0 +1,4692 @@
+<!DOCTYPE html>
+<!--
+  ⚠ الملف ده متولّد تلقائياً — متعدلوش بالإيد!
+
+  الأصل في: web/static/  (index.html + style.css + *.js)
+  لإعادة توليده:  python tools/build_single_file.py
+  آخر توليد:      2026-08-19
+
+  ده نسخة «ملف واحد» من البرنامج: كل الـ CSS والـ JS متلزقين جوه
+  الملف ده عشان دبل كليك واحد يفتح البرنامج فوراً من غير سيرفر.
+-->
+
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#071827" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>توفير بذكاء — حاسبة الميزانية الشهرية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- الخطوط بتتحمّل من غير ما تعطّل ظهور الصفحة، ولو مفيش نت
+       بيشتغل الخط العربي الموجود على الجهاز نفسه -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Tajawal:wght@400;500;700&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  </noscript>
+  <style>
+/* =========================================================
+   توفير بذكاء — واجهة داكنة: كحلي عميق + ذهبي
+   ========================================================= */
+
+:root {
+  --bg: #071522;
+  --bg-2: #0a2136;
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --stroke: rgba(255, 255, 255, 0.10);
+  --stroke-strong: rgba(255, 255, 255, 0.20);
+
+  --gold: #e0a54a;
+  --gold-soft: #f2ca8a;
+  --gold-deep: #b9822c;
+
+  --text: #eaf1f8;
+  --muted: #91a4b8;
+
+  --ok: #3fb883;
+  --warn: #e0a54a;
+  --over: #e2645c;
+
+  --radius: 14px;
+  --radius-lg: 22px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 620px at 85% -8%, rgba(31, 106, 173, 0.28) 0%, transparent 62%),
+    linear-gradient(180deg, #0a2136 0%, #071522 55%, #050f18 100%);
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Tajawal", "Cairo", -apple-system, "SF Arabic", "Geeza Pro", "Noto Naskh Arabic", "Noto Sans Arabic", "Droid Arabic Naskh", "Segoe UI", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .nav__name, .btn, .stat__value, .tile__amount, .ring__value {
+  font-family: "Cairo", "Tajawal", -apple-system, "SF Arabic", "Noto Kufi Arabic", "Noto Sans Arabic", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ---------- توهج الخلفية ---------- */
+.glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(110px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow--right {
+  width: 620px;
+  height: 620px;
+  top: -180px;
+  left: -160px;
+  background: rgba(224, 165, 74, 0.20);
+}
+
+.glow--left {
+  width: 560px;
+  height: 560px;
+  bottom: -220px;
+  right: -180px;
+  background: rgba(31, 106, 173, 0.22);
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 22px 20px 70px;
+}
+
+/* ---------- شريط التنقل ---------- */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+}
+
+.nav__brand { display: flex; align-items: center; gap: 9px; }
+
+.nav__mark { color: var(--gold); font-size: 1.1rem; }
+
+.nav__name { font-weight: 900; font-size: 1.05rem; letter-spacing: 0.2px; }
+
+.nav__links { display: flex; gap: 22px; font-size: 0.92rem; }
+
+.nav__links a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.nav__links a:hover { color: var(--gold-soft); }
+
+/* ---------- الهيرو ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 40px;
+  padding: 64px 6px 56px;
+}
+
+.hero__eyebrow {
+  color: var(--gold);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.hero__title {
+  font-size: clamp(2.1rem, 5.4vw, 3.35rem);
+  font-weight: 900;
+  line-height: 1.24;
+  margin: 0 0 16px;
+}
+
+.gold {
+  background: linear-gradient(100deg, var(--gold-soft), var(--gold), var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nowrap { white-space: nowrap; direction: ltr; unicode-bidi: embed; }
+
+.hero__lede {
+  color: var(--muted);
+  max-width: 460px;
+  margin: 0 0 26px;
+}
+
+.hero__lede strong { color: var(--text); font-weight: 700; }
+
+.hero__actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
+
+.trusted {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 18px;
+  border-top: 1px solid var(--stroke);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.trusted__label { letter-spacing: 1px; text-transform: uppercase; opacity: 0.7; }
+
+.trusted__item { font-weight: 700; color: rgba(234, 241, 248, 0.62); }
+
+/* --- العنصر المميز: حلقة التقسيم --- */
+.hero__visual { display: grid; justify-items: center; gap: 20px; }
+
+.ring {
+  position: relative;
+  width: 236px;
+  height: 236px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--gold) 0turn 0.5turn,
+    #4b9fd6 0.5turn 0.8turn,
+    #3fb883 0.8turn 1turn
+  );
+  display: grid;
+  place-items: center;
+  box-shadow: 0 24px 60px -24px rgba(224, 165, 74, 0.45);
+}
+
+.ring::after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.ring__hole {
+  width: 63%;
+  height: 63%;
+  border-radius: 50%;
+  background: #08192a;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.ring__label { font-size: 0.74rem; color: var(--muted); }
+
+.ring__value { font-size: 1.35rem; color: var(--gold-soft); direction: ltr; }
+
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.legend b { color: var(--text); }
+
+.dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+.dot--needs { background: var(--gold); }
+.dot--wants { background: #4b9fd6; }
+.dot--savings { background: #3fb883; }
+
+/* ---------- الكروت ---------- */
+.card,
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  margin-bottom: 22px;
+  backdrop-filter: blur(6px);
+}
+
+.panel {
+  background: linear-gradient(155deg, rgba(20, 56, 90, 0.55), rgba(8, 25, 42, 0.75));
+  border-color: rgba(224, 165, 74, 0.16);
+}
+
+.card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card__title {
+  font-size: 1.08rem;
+  font-weight: 700;
+  margin: 0 0 18px;
+  color: var(--text);
+}
+
+.card__head .card__title { margin-bottom: 18px; }
+
+.count {
+  background: var(--surface-2);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  padding: 1px 12px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* ---------- الحقول ---------- */
+.field { display: block; margin-bottom: 18px; }
+
+.field__label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: rgba(234, 241, 248, 0.85);
+  margin-bottom: 8px;
+}
+
+.field__input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  background: rgba(4, 14, 24, 0.55);
+  color: var(--text);
+  font: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field__input::placeholder { color: #5f7286; }
+
+.field__input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(224, 165, 74, 0.18);
+}
+
+select.field__input { cursor: pointer; }
+
+select.field__input option { background: #0a2136; color: var(--text); }
+
+/* ---------- طرق التقسيم ---------- */
+.modes { border: 0; padding: 0; margin: 0 0 16px; }
+
+.modes__row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+.pill { position: relative; display: block; cursor: pointer; }
+
+.pill input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.pill span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 13px 8px;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  background: rgba(4, 14, 24, 0.45);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.pill span small { font-weight: 400; font-size: 0.72rem; color: var(--muted); }
+
+.pill input:checked + span {
+  border-color: var(--gold);
+  background: rgba(224, 165, 74, 0.12);
+  color: var(--gold-soft);
+}
+
+.pill input:checked + span small { color: rgba(242, 202, 138, 0.75); }
+
+.pill input:focus-visible + span { box-shadow: 0 0 0 3px rgba(224, 165, 74, 0.35); }
+
+/* ---------- التقسيم المخصص ---------- */
+.custom { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+
+.mini { display: flex; flex-direction: column; gap: 6px; font-size: 0.84rem; color: var(--muted); }
+
+.mini input {
+  padding: 10px;
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  background: rgba(4, 14, 24, 0.55);
+  color: var(--text);
+  font: inherit;
+}
+
+.custom__hint { grid-column: 1 / -1; margin: 0; font-size: 0.82rem; color: var(--muted); }
+
+.custom__hint.bad { color: var(--over); font-weight: 700; }
+
+/* ---------- الأزرار ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 13px 24px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.12s ease, filter 0.15s ease, border-color 0.15s ease;
+}
+
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.actions .btn { flex: 1 1 170px; }
+
+.btn:active { transform: translateY(1px); }
+
+.btn--gold {
+  background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+  color: #2c1e06;
+  box-shadow: 0 14px 30px -16px rgba(224, 165, 74, 0.85);
+}
+
+.btn--gold:hover { filter: brightness(1.06); }
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--stroke-strong);
+  color: var(--text);
+}
+
+.btn--ghost:hover { border-color: var(--gold); color: var(--gold-soft); }
+
+.btn--sm { padding: 9px 18px; font-size: 0.86rem; }
+
+.btn:focus-visible { outline: 3px solid rgba(224, 165, 74, 0.45); outline-offset: 2px; }
+
+/* ---------- لوحة النتيجة ---------- */
+.panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.panel__title { margin: 0; font-size: 1.08rem; color: var(--gold-soft); font-weight: 700; }
+
+.panel__meta { font-size: 0.84rem; color: var(--muted); }
+
+.empty { display: flex; align-items: center; gap: 14px; color: var(--muted); }
+
+.empty__icon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(224, 165, 74, 0.14);
+  color: var(--gold);
+  font-size: 1.15rem;
+}
+
+.empty p { margin: 0; }
+
+/* --- شريط الالتزام --- */
+.tiles { display: grid; gap: 14px; }
+
+.tile {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+
+.tile__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.tile__name { font-weight: 700; }
+
+.tile__share {
+  font-size: 0.74rem;
+  color: var(--gold);
+  border: 1px solid rgba(224, 165, 74, 0.45);
+  border-radius: 999px;
+  padding: 1px 9px;
+}
+
+.tile__amount {
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+  direction: ltr;
+  text-align: right;
+}
+
+.track {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.10);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.track__fill {
+  height: 100%;
+  border-radius: 999px;
+  width: 0;
+  background: var(--gold);
+  transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.track__fill.is-ok { background: linear-gradient(90deg, #3fb883, #6fd3a8); }
+.track__fill.is-near { background: linear-gradient(90deg, var(--gold-deep), var(--gold-soft)); }
+.track__fill.is-over { background: linear-gradient(90deg, #b8433c, #e2645c); }
+
+.tile__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.tile__meta strong { color: var(--text); }
+
+.panel__foot {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--stroke);
+}
+
+.stat { text-align: center; }
+
+.stat__label { display: block; font-size: 0.76rem; color: var(--muted); }
+
+.stat__value { font-size: 1.15rem; color: var(--gold-soft); }
+
+/* ---------- التنبيهات ---------- */
+.alerts { display: grid; gap: 10px; margin-bottom: 22px; }
+
+.alert { border-radius: var(--radius); padding: 12px 16px; border: 1px solid; }
+
+.alert--warning {
+  background: rgba(224, 165, 74, 0.10);
+  border-color: rgba(224, 165, 74, 0.42);
+  color: var(--gold-soft);
+}
+
+.alert--danger {
+  background: rgba(226, 100, 92, 0.10);
+  border-color: rgba(226, 100, 92, 0.45);
+  color: #f0a19b;
+}
+
+/* ---------- الشبكة ---------- */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+
+.grid > .card { margin-bottom: 0; }
+
+/* ---------- جدول المصاريف ---------- */
+.table { display: grid; gap: 8px; max-height: 330px; overflow-y: auto; }
+
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+  background: rgba(4, 14, 24, 0.4);
+}
+
+.tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: 1px solid;
+}
+
+.tag--needs { background: rgba(224, 165, 74, 0.12); border-color: rgba(224, 165, 74, 0.4); color: var(--gold-soft); }
+.tag--wants { background: rgba(75, 159, 214, 0.12); border-color: rgba(75, 159, 214, 0.4); color: #9ecdf0; }
+.tag--savings { background: rgba(63, 184, 131, 0.12); border-color: rgba(63, 184, 131, 0.4); color: #85dcb5; }
+
+.row__desc { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.row__amount { font-weight: 700; direction: ltr; }
+
+.row__edit,
+.row__del {
+  background: none;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+.row__edit:hover { color: var(--gold-soft); background: rgba(224, 165, 74, 0.12); }
+.row__del:hover { color: #f0a19b; background: rgba(226, 100, 92, 0.12); }
+
+/* ---------- التقرير ---------- */
+.report__verdict {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  border: 1px solid;
+}
+
+.report__verdict.good {
+  background: rgba(63, 184, 131, 0.10);
+  border-color: rgba(63, 184, 131, 0.4);
+  color: #85dcb5;
+}
+
+.report__verdict.bad {
+  background: rgba(226, 100, 92, 0.10);
+  border-color: rgba(226, 100, 92, 0.42);
+  color: #f0a19b;
+}
+
+.report__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+
+.report__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--stroke);
+  font-size: 0.94rem;
+}
+
+.report__list li:last-child { border-bottom: 0; padding-bottom: 0; }
+
+.report__list span { color: var(--muted); }
+
+.report__list strong { direction: ltr; }
+
+/* ---------- رسائل ---------- */
+.msg { margin: 14px 0 0; font-size: 0.9rem; min-height: 1.2em; }
+.msg.ok { color: #85dcb5; font-weight: 700; }
+.msg.bad { color: #f0a19b; font-weight: 700; }
+
+.empty-line { color: var(--muted); margin: 0; }
+
+.foot {
+  margin-top: 34px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.foot code {
+  background: rgba(255, 255, 255, 0.07);
+  padding: 1px 7px;
+  border-radius: 6px;
+  color: var(--gold-soft);
+}
+
+/* ---------- الموبايل ---------- */
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; padding: 40px 0 34px; gap: 34px; }
+  .hero__visual { order: -1; }
+  .nav__links { display: none; }
+  .grid { grid-template-columns: 1fr; }
+  .modes__row { grid-template-columns: 1fr; }
+  .panel__foot { grid-template-columns: 1fr; gap: 10px; }
+  .card, .panel { padding: 20px; }
+  .ring { width: 190px; height: 190px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* =========================================================
+   قسم التحليل الإحصائي
+   ========================================================= */
+
+.stats__lede {
+  margin: 0 0 18px;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+.stats__lede strong { color: var(--gold-soft); }
+
+.stats__hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stats__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.scard {
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 16px 16px 12px;
+}
+
+.scard--ok    { border-color: rgba(63, 184, 131, 0.38); }
+.scard--warn  { border-color: rgba(224, 165, 74, 0.42); }
+.scard--bad   { border-color: rgba(226, 100, 92, 0.45); }
+.scard--muted { opacity: 0.75; }
+
+.scard__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.scard__head h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-family: "Cairo", "Tajawal", -apple-system, "SF Arabic", "Noto Kufi Arabic", "Noto Sans Arabic", "Segoe UI", system-ui, sans-serif;
+}
+
+.scard__badge {
+  font-size: 0.72rem;
+  color: var(--gold-soft);
+  background: rgba(224, 165, 74, 0.12);
+  border: 1px solid rgba(224, 165, 74, 0.28);
+  border-radius: 999px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+.scard__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.scard__list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.scard__list li strong { color: var(--text); }
+
+.scard__list li.wide {
+  display: block;
+  font-size: 0.83rem;
+  line-height: 1.7;
+  border-top: 1px solid var(--stroke);
+  padding-top: 8px;
+  margin-top: 3px;
+}
+
+.scard__empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.flags { display: grid; gap: 6px; }
+
+.flag {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text);
+  background: rgba(226, 100, 92, 0.10);
+  border: 1px solid rgba(226, 100, 92, 0.30);
+  border-radius: 10px;
+  padding: 7px 10px;
+}
+
+.flag b { color: var(--over); }
+
+.flag--ok {
+  background: rgba(63, 184, 131, 0.10);
+  border-color: rgba(63, 184, 131, 0.30);
+}
+
+.mini-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.mini-table th {
+  color: var(--muted);
+  font-weight: 500;
+  text-align: right;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.mini-table td {
+  padding: 5px 0;
+  color: var(--text);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ---------- تقييم مبلغ قبل الصرف ---------- */
+.check {
+  margin-top: 22px;
+  padding: 16px;
+  border: 1px dashed var(--stroke-strong);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.check__title {
+  margin: 0 0 12px;
+  font-size: 0.98rem;
+  font-family: "Cairo", "Tajawal", -apple-system, "SF Arabic", "Noto Kufi Arabic", "Noto Sans Arabic", "Segoe UI", system-ui, sans-serif;
+}
+
+.check__row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr auto;
+  gap: 10px;
+}
+
+/* ---------- الرسومات ---------- */
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.chart {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+
+.chart img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+}
+
+.chart figcaption {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+@media (max-width: 620px) {
+  .check__row { grid-template-columns: 1fr; }
+}
+
+/* خاصية hidden لازم تغلب أي display متحدد فوق */
+[hidden] { display: none !important; }
+
+/* شريط الوضع بدون سيرفر (بيظهر بس لما تفتح index.html مباشرة) */
+.offline-banner {
+  background: rgba(224, 165, 74, 0.12);
+  border: 1px solid rgba(224, 165, 74, 0.38);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin: 16px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.9;
+  color: var(--text);
+}
+
+.offline-banner b { color: var(--gold-soft); }
+
+.offline-banner code {
+  direction: ltr;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--gold-soft);
+  font-size: 0.85em;
+}
+
+/* =========================================================
+   التحليل الإحصائي الشامل — 12 مرحلة
+   ========================================================= */
+
+.field--inline { flex: 1 1 220px; margin: 0; }
+
+.pipe {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.pipe__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-self: start;
+  position: sticky;
+  top: 16px;
+}
+
+.pipe__nav button {
+  text-align: right;
+  padding: 9px 13px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.86rem;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.pipe__nav button:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+
+.pipe__nav button.on {
+  background: rgba(224, 165, 74, 0.13);
+  border-color: rgba(224, 165, 74, 0.4);
+  color: var(--gold-soft);
+}
+
+.pipe__panel {
+  min-width: 0;                 /* من غيرها الجدول العريض بيمدّ الصفحة */
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 18px 20px 22px;
+  min-height: 320px;
+}
+
+.ptitle {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  color: var(--gold-soft);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.phead {
+  margin: 20px 0 10px;
+  font-size: 0.9rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 6px 16px;
+  margin: 10px 0;
+}
+
+.prow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+  font-size: 0.86rem;
+}
+
+.prow span { color: var(--muted); }
+.prow b { color: var(--text); direction: ltr; }
+
+.ptable-wrap {
+  position: relative;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 10px 0;
+}
+
+/* بتظهر بس لما الجدول يبقى فعلاً أعرض من الشاشة (بتتحط بالـ JS) */
+.ptable-wrap.is-scrollable::after {
+  content: "اسحب الجدول لرؤية باقي الأعمدة ◂";
+  display: block;
+  padding: 6px 2px 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.ptable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+
+.ptable th,
+.ptable td {
+  padding: 7px 9px;
+  text-align: right;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.ptable th {
+  color: var(--muted);
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.ptable td { color: var(--text); }
+.ptable tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+
+.pchart {
+  width: 100%;
+  height: auto;
+  max-height: 170px;
+  display: block;
+  margin: 10px 0;
+  direction: ltr;
+}
+
+.pnote {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(224, 165, 74, 0.08);
+  border-right: 3px solid var(--gold);
+  color: var(--text);
+  font-size: 0.87rem;
+  line-height: 2;
+}
+
+.pwhy {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.plist {
+  margin: 8px 0;
+  padding-right: 20px;
+  color: var(--text);
+  font-size: 0.87rem;
+  line-height: 2;
+}
+
+.plist li { margin-bottom: 6px; }
+
+.pviz {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.pviz__item {
+  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.pviz__item .phead { margin-top: 0; }
+
+/* اختبار الفروض */
+.hyp {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 6px;
+}
+
+.hyp__h {
+  margin: 4px 0;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.verdict {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.verdict--reject {
+  background: rgba(63, 184, 131, 0.14);
+  border: 1px solid rgba(63, 184, 131, 0.45);
+  color: var(--ok);
+}
+
+.verdict--keep {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--stroke-strong);
+  color: var(--muted);
+}
+
+/* فترة الثقة */
+.ci { margin: 14px 0 4px; }
+
+.ci__bar {
+  display: grid;
+  grid-template-columns: 70px 1fr 70px;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  direction: ltr;
+}
+
+.ci__track {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(224, 165, 74, 0.15), rgba(224, 165, 74, 0.5), rgba(224, 165, 74, 0.15));
+  border: 1px solid rgba(224, 165, 74, 0.4);
+}
+
+.ci__track b {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-soft);
+  font-size: 0.82rem;
+}
+
+.ci__track i {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 2px;
+  height: 20px;
+  background: var(--gold-soft);
+}
+
+@media (max-width: 760px) {
+  /* iOS بيكبّر الصفحة لوحده لو خط الحقل أقل من 16px */
+  .field__input,
+  input[type="number"],
+  input[type="text"],
+  select {
+    font-size: 16px;
+  }
+
+  .pipe { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+
+  /* تبويبات المراحل بتبقى شريط أفقي بيتزحلق باللمس */
+  .pipe__nav {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 8px 0;
+    margin: 0 -4px;
+    background: var(--bg);
+    scroll-snap-type: x proximity;
+  }
+
+  .pipe__nav button {
+    white-space: nowrap;
+    scroll-snap-align: start;
+    padding: 9px 14px;
+  }
+
+  .pipe__panel { padding: 14px 12px 18px; }
+
+  /* الجدول بيفضل بعرضه الطبيعي ويتزحلق جوه حاويته */
+  .ptable {
+    width: auto;
+    min-width: 100%;
+  }
+
+  .ptable th,
+  .ptable td {
+    white-space: nowrap;
+    padding: 7px 8px;
+    font-size: 0.8rem;
+  }
+
+  .pgrid { grid-template-columns: 1fr; }
+
+  .pviz { grid-template-columns: 1fr; }
+
+  .ptitle { font-size: 1rem; }
+
+  .pnote { font-size: 0.85rem; padding: 11px 12px; }
+
+  .field--inline { flex: 1 1 100%; }
+
+  .hyp__h { font-size: 0.84rem; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="glow glow--right"></div>
+<div class="glow glow--left"></div>
+
+<div class="shell">
+
+  <nav class="nav">
+    <div class="nav__brand">
+      <span class="nav__mark">◈</span>
+      <span class="nav__name">توفير بذكاء</span>
+    </div>
+    <div class="nav__links">
+      <a href="#calculator">الحاسبة</a>
+      <a href="#expenses">المصاريف</a>
+      <a href="#report">التقرير</a>
+      <a href="#stats">التحليل</a>
+      <a href="#pipeline">١٢ مرحلة</a>
+    </div>
+    <a class="btn btn--gold btn--sm" href="#calculator">ابدأ التقسيم ←</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero__text">
+      <p class="hero__eyebrow">حاسبة الميزانية الشهرية</p>
+      <h1 class="hero__title">
+        <span class="gold">تحكّم في فلوسك</span><br />
+        بقاعدة <span class="nowrap">50/30/20</span>
+      </h1>
+      <p class="hero__lede">
+        اكتب دخلك الشهري، والبرنامج يقسّمه بين <strong>الاحتياجات والكماليات
+        والتوفير</strong>، ويقارن خطتك بمصاريفك الفعلية أول بأول.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--gold" href="#calculator">احسب تقسيم دخلك ←</a>
+        <a class="btn btn--ghost" href="#report">شوف التقرير</a>
+      </div>
+
+      <div class="trusted">
+        <span class="trusted__label">مبني بـ</span>
+        <span class="trusted__item">Python</span>
+        <span class="trusted__item">JSON</span>
+        <span class="trusted__item">CSV</span>
+        <span class="trusted__item">NumPy</span>
+        <span class="trusted__item">Matplotlib</span>
+      </div>
+    </div>
+
+    <div class="hero__visual">
+      <div class="ring" id="heroRing">
+        <div class="ring__hole">
+          <span class="ring__label">الدخل الشهري</span>
+          <strong class="ring__value" id="heroIncome">—</strong>
+        </div>
+      </div>
+      <ul class="legend">
+        <li><i class="dot dot--needs"></i> احتياجات <b>50٪</b></li>
+        <li><i class="dot dot--wants"></i> كماليات <b>30٪</b></li>
+        <li><i class="dot dot--savings"></i> توفير <b>20٪</b></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card" id="calculator">
+    <h2 class="card__title">١. دخلك وطريقة التقسيم</h2>
+
+    <label class="field">
+      <span class="field__label">الدخل الشهري (جنيه)</span>
+      <input class="field__input" id="incomeInput" type="number" min="1" step="any"
+             inputmode="decimal" placeholder="مثال: 8000" />
+    </label>
+
+    <fieldset class="modes">
+      <legend class="field__label">طريقة التقسيم</legend>
+      <div class="modes__row">
+        <label class="pill">
+          <input type="radio" name="mode" value="50/30/20" checked />
+          <span>50/30/20 <small>قاعدة كلاسيكية</small></span>
+        </label>
+        <label class="pill">
+          <input type="radio" name="mode" value="60/20/20" />
+          <span>60/20/20 <small>إيجار عالي</small></span>
+        </label>
+        <label class="pill">
+          <input type="radio" name="mode" value="custom" />
+          <span>تقسيم مخصص <small>نسبك أنت</small></span>
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="custom" id="customBox" hidden>
+      <label class="mini"><span>احتياجات ٪</span><input id="cNeeds" type="number" value="50" min="0" max="100" /></label>
+      <label class="mini"><span>كماليات ٪</span><input id="cWants" type="number" value="30" min="0" max="100" /></label>
+      <label class="mini"><span>توفير ٪</span><input id="cSavings" type="number" value="20" min="0" max="100" /></label>
+      <p class="custom__hint" id="customHint">المجموع لازم يساوي 100٪</p>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn--gold" id="calcBtn" type="button">حساب التقسيم</button>
+      <button class="btn btn--ghost" id="resetBtn" type="button">إعادة تعيين</button>
+    </div>
+
+    <p class="msg" id="incomeMsg" role="status"></p>
+  </section>
+
+  <section class="panel">
+    <div class="panel__head">
+      <h2 class="panel__title">٢. خطتك مقابل مصاريفك</h2>
+      <span class="panel__meta" id="panelMeta"></span>
+    </div>
+
+    <div class="empty" id="resultEmpty">
+      <span class="empty__icon">✦</span>
+      <p>اكتب دخلك واضغط «حساب التقسيم» عشان تشوف الخطة هنا.</p>
+    </div>
+
+    <div class="tiles" id="tiles" hidden></div>
+
+    <div class="panel__foot" id="panelFoot" hidden>
+      <div class="stat"><span class="stat__label">إجمالي المصروف</span><strong class="stat__value" id="statSpent">0</strong></div>
+      <div class="stat"><span class="stat__label">التوفير الفعلي</span><strong class="stat__value" id="statSaved">0</strong></div>
+      <div class="stat"><span class="stat__label">حالة الالتزام</span><strong class="stat__value" id="statStatus">—</strong></div>
+    </div>
+  </section>
+
+  <div class="alerts" id="alerts"></div>
+
+  <section class="grid" id="expenses">
+    <div class="card">
+      <h2 class="card__title">٣. تسجيل مصروف</h2>
+
+      <label class="field">
+        <span class="field__label">المبلغ</span>
+        <input class="field__input" id="expAmount" type="number" min="1" step="any"
+               inputmode="decimal" placeholder="مثال: 250" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">التصنيف</span>
+        <select class="field__input" id="expCategory">
+          <option value="needs">احتياجات</option>
+          <option value="wants">كماليات</option>
+          <option value="savings">توفير</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">الوصف</span>
+        <input class="field__input" id="expDesc" type="text" maxlength="100" placeholder="مثال: فاتورة كهرباء" />
+      </label>
+
+      <div class="actions">
+        <button class="btn btn--gold" id="addExpenseBtn" type="button">أضف المصروف</button>
+        <button class="btn btn--ghost" id="exportBtn" type="button">تصدير CSV</button>
+      </div>
+
+      <p class="msg" id="expenseMsg" role="status"></p>
+    </div>
+
+    <div class="card">
+      <div class="card__head">
+        <h2 class="card__title">المصاريف المسجلة</h2>
+        <span class="count" id="expCount">0</span>
+      </div>
+      <div class="table" id="expenseTable">
+        <p class="empty-line">لسه مفيش مصاريف. سجّل أول مصروف من جنب.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="report">
+    <h2 class="card__title">٤. تقرير الشهر</h2>
+    <div id="reportBody">
+      <p class="empty-line">التقرير هيظهر بعد ما تحدد الدخل وتسجل مصاريفك.</p>
+    </div>
+  </section>
+
+
+  <section class="card" id="stats">
+    <div class="card__head">
+      <h2 class="card__title">٥. التحليل الإحصائي</h2>
+      <span class="count" id="statsEngine">—</span>
+    </div>
+
+    <p class="stats__lede">
+      مصاريفك مش أرقام ثابتة — دي <strong>متغيّر عشوائي</strong>. البرنامج بيطبّق
+      عليها التوزيعات الاحتمالية عشان يجاوب: هتخلّص الشهر على كام؟ واحتمال تعدّي
+      دخلك إد إيه؟ وأنهي مصروف فيهم شاذ؟
+    </p>
+
+    <div class="actions">
+      <button class="btn btn--gold" id="statsBtn" type="button">شغّل التحليل</button>
+      <span class="stats__hint" id="statsHint"></span>
+    </div>
+
+    <div class="stats__grid" id="statsGrid" hidden></div>
+
+    <div class="check">
+      <h3 class="check__title">قبل ما تصرف: المبلغ ده طبيعي ولا شاذ؟</h3>
+      <div class="check__row">
+        <input class="field__input" id="checkAmount" type="number" min="1" step="any"
+               inputmode="decimal" placeholder="المبلغ" />
+        <select class="field__input" id="checkCategory">
+          <option value="needs">احتياجات</option>
+          <option value="wants">كماليات</option>
+          <option value="savings">توفير</option>
+        </select>
+        <button class="btn btn--ghost" id="checkBtn" type="button">قيّم المبلغ</button>
+      </div>
+      <p class="msg" id="checkMsg" role="status"></p>
+    </div>
+
+    <div class="charts" id="charts" hidden></div>
+  </section>
+
+
+  <section class="card" id="pipeline">
+    <div class="card__head">
+      <h2 class="card__title">٦. التحليل الإحصائي الشامل — ١٢ مرحلة</h2>
+      <span class="count" id="pipeRows">—</span>
+    </div>
+
+    <p class="stats__lede">
+      خط تحليل كامل على بياناتك: تنظيف → إحصاء وصفي → توزيع → جبر خطي →
+      احتمالات → معاينة → فترات ثقة → اختبار فروض → ANOVA → تفاضل → رسومات → خلاصة.
+    </p>
+
+    <div class="actions">
+      <label class="field field--inline">
+        <span class="field__label">مصدر البيانات</span>
+        <select class="field__input" id="pipeSource">
+          <option value="app">مصاريف البرنامج</option>
+          <option value="dataset">داتاست التجربة (data/dataset.csv)</option>
+        </select>
+      </label>
+      <label class="btn btn--ghost" for="pipeFile">ارفع CSV</label>
+      <input id="pipeFile" type="file" accept=".csv,text/csv" hidden />
+      <button class="btn btn--gold" id="pipeBtn" type="button">شغّل الـ ١٢ مرحلة</button>
+      <span class="stats__hint" id="pipeHint"></span>
+    </div>
+
+    <div class="pipe" id="pipeBody" hidden>
+      <nav class="pipe__nav" id="pipeNav"></nav>
+      <div class="pipe__panel" id="pipePanel"></div>
+    </div>
+  </section>
+
+
+  <footer class="foot">
+    مشروع بايثون النهائي — واجهة الويب بتكلّم نفس كود <code>app/</code> بتاع الكونسول.
+  </footer>
+</div>
+
+<script>
+/* ===== offline-data.js ===== */
+/* =========================================================
+   offline-data.js — متولّد تلقائياً، متعدلوش بالإيد!
+   المصدر: app/config.py
+   لإعادة توليده:  python tools/build_offline_data.py
+   ========================================================= */
+
+window.OFFLINE_DATA = {
+  "app_name": "توفير بذكاء",
+  "currency": "جنيه",
+  "categories": [
+    {
+      "key": "needs",
+      "label": "احتياجات"
+    },
+    {
+      "key": "wants",
+      "label": "كماليات"
+    },
+    {
+      "key": "savings",
+      "label": "توفير"
+    }
+  ],
+  "split_modes": {
+    "50/30/20": {
+      "needs": 0.5,
+      "wants": 0.3,
+      "savings": 0.2
+    },
+    "60/20/20": {
+      "needs": 0.6,
+      "wants": 0.2,
+      "savings": 0.2
+    }
+  },
+  "default_mode": "50/30/20",
+  "warning_threshold": 0.8
+};
+
+</script>
+<script>
+/* ===== offline-analysis.js ===== */
+/* =========================================================
+   offline-analysis.js — الـ 12 مرحلة جوه المتصفح
+
+   نسخة مطابقة لـ app/analysis.py + app/inference.py عشان الصفحة
+   تشتغل بالدبل كليك من غير سيرفر بايثون. نفس المعادلات ونفس أسماء
+   الحقول بالظبط، فالواجهة مبتفرقش بين النسختين.
+
+   بايثون يفضل هو الأصل: أي تعديل في المعادلات يتعمل هناك الأول.
+   ========================================================= */
+
+window.OfflineAnalysis = (function () {
+  "use strict";
+
+  const CATS = ["needs", "wants", "savings"];
+  const LABELS = { needs: "احتياجات", wants: "كماليات", savings: "توفير" };
+  const CURRENCY = "جنيه";
+  const MIN_ROWS = 12;
+  const ALPHA = 0.05;
+
+  const round = (value, digits = 2) => {
+    const factor = Math.pow(10, digits);
+    return Math.round((Number(value) + Number.EPSILON) * factor) / factor;
+  };
+
+  const sum = (values) => values.reduce((total, value) => total + value, 0);
+  const mean = (values) => (values.length ? sum(values) / values.length : 0);
+
+  const fmt = (value, digits = 0) =>
+    Number(value || 0).toLocaleString("en-US", {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
+
+  /* =======================================================
+     رياضيات الاستدلال (نسخة inference.py)
+     ======================================================= */
+  function lgamma(x) {
+    const c = [
+      676.5203681218851, -1259.1392167224028, 771.32342877765313,
+      -176.61502916214059, 12.507343278686905, -0.13857109526572012,
+      9.9843695780195716e-6, 1.5056327351493116e-7,
+    ];
+    if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - lgamma(1 - x);
+    x -= 1;
+    let a = 0.99999999999980993;
+    const t = x + 7.5;
+    c.forEach((value, index) => {
+      a += value / (x + index + 1);
+    });
+    return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+  }
+
+  /* الكسر المستمر بتاع دالة بيتا الناقصة (Lentz) */
+  function betaContinuedFraction(a, b, x) {
+    const tiny = 1e-30;
+    const qab = a + b;
+    const qap = a + 1;
+    const qam = a - 1;
+
+    let c = 1;
+    let d = 1 - (qab * x) / qap;
+    if (Math.abs(d) < tiny) d = tiny;
+    d = 1 / d;
+    let result = d;
+
+    for (let step = 1; step <= 300; step += 1) {
+      const even = 2 * step;
+      let numerator = (step * (b - step) * x) / ((qam + even) * (a + even));
+
+      d = 1 + numerator * d;
+      if (Math.abs(d) < tiny) d = tiny;
+      c = 1 + numerator / c;
+      if (Math.abs(c) < tiny) c = tiny;
+      d = 1 / d;
+      result *= d * c;
+
+      numerator = (-(a + step) * (qab + step) * x) / ((a + even) * (qap + even));
+      d = 1 + numerator * d;
+      if (Math.abs(d) < tiny) d = tiny;
+      c = 1 + numerator / c;
+      if (Math.abs(c) < tiny) c = tiny;
+      d = 1 / d;
+      const delta = d * c;
+      result *= delta;
+
+      if (Math.abs(delta - 1) < 3e-16) break;
+    }
+
+    return result;
+  }
+
+  function incompleteBeta(a, b, x) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+
+    const front = Math.exp(
+      lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x)
+    );
+
+    if (x < (a + 1) / (a + b + 2)) return (front * betaContinuedFraction(a, b, x)) / a;
+    return 1 - (front * betaContinuedFraction(b, a, 1 - x)) / b;
+  }
+
+  const tTwoTailedP = (t, df) =>
+    df <= 0 ? 1 : Math.min(1, incompleteBeta(df / 2, 0.5, df / (df + t * t)));
+
+  function tCritical(df, confidence = 0.95) {
+    if (df <= 0) return 1.96;
+    const target = 1 - confidence;
+    let low = 0;
+    let high = 100;
+    for (let step = 0; step < 200; step += 1) {
+      const middle = (low + high) / 2;
+      if (tTwoTailedP(middle, df) > target) low = middle;
+      else high = middle;
+    }
+    return round((low + high) / 2, 6);
+  }
+
+  function fPValue(f, df1, df2) {
+    if (f <= 0 || df1 <= 0 || df2 <= 0) return 1;
+    const x = (df1 * f) / (df1 * f + df2);
+    return Math.max(0, Math.min(1, 1 - incompleteBeta(df1 / 2, df2 / 2, x)));
+  }
+
+  const normalCdf = (x, mu, sigma) =>
+    0.5 * (1 + erf((x - mu) / (sigma * Math.SQRT2)));
+
+  function erf(x) {
+    const sign = x < 0 ? -1 : 1;
+    x = Math.abs(x);
+    const t = 1 / (1 + 0.3275911 * x);
+    const y =
+      1 -
+      ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t +
+        0.254829592) *
+        t *
+        Math.exp(-x * x);
+    return sign * y;
+  }
+
+  function linearRegression(xs, ys) {
+    const count = xs.length;
+    if (count < 2) return { slope: 0, intercept: 0, r: 0, r_squared: 0, n: count };
+
+    const meanX = mean(xs);
+    const meanY = mean(ys);
+    let covariance = 0;
+    let varianceX = 0;
+    let varianceY = 0;
+
+    xs.forEach((x, index) => {
+      covariance += (x - meanX) * (ys[index] - meanY);
+      varianceX += Math.pow(x - meanX, 2);
+      varianceY += Math.pow(ys[index] - meanY, 2);
+    });
+
+    const slope = varianceX ? covariance / varianceX : 0;
+    const denominator = Math.sqrt(varianceX * varianceY);
+    const r = denominator ? covariance / denominator : 0;
+
+    return { slope, intercept: meanY - slope * meanX, r, r_squared: r * r, n: count };
+  }
+
+  /* حل نظام 3×3 بحذف جاوس — للمنحنى التربيعي */
+  function solveSystem(matrix) {
+    const size = matrix.length;
+    const rows = matrix.map((row) => [...row]);
+
+    for (let column = 0; column < size; column += 1) {
+      let pivot = column;
+      for (let index = column; index < size; index += 1) {
+        if (Math.abs(rows[index][column]) > Math.abs(rows[pivot][column])) pivot = index;
+      }
+      if (Math.abs(rows[pivot][column]) < 1e-12) return null;
+      [rows[column], rows[pivot]] = [rows[pivot], rows[column]];
+
+      for (let target = 0; target < size; target += 1) {
+        if (target === column) continue;
+        const factor = rows[target][column] / rows[column][column];
+        for (let position = column; position <= size; position += 1) {
+          rows[target][position] -= factor * rows[column][position];
+        }
+      }
+    }
+
+    return rows.map((row, index) => row[size] / row[index]);
+  }
+
+  function quadraticFit(xs, ys) {
+    if (xs.length < 3) return { a: 0, b: 0, c: 0, n: xs.length };
+
+    const power = (exponent) => sum(xs.map((x) => Math.pow(x, exponent)));
+    const cross = (exponent) => sum(xs.map((x, index) => Math.pow(x, exponent) * ys[index]));
+
+    const solution = solveSystem([
+      [power(4), power(3), power(2), cross(2)],
+      [power(3), power(2), power(1), cross(1)],
+      [power(2), power(1), xs.length, cross(0)],
+    ]);
+
+    if (!solution) return { a: 0, b: 0, c: 0, n: xs.length };
+    return { a: solution[0], b: solution[1], c: solution[2], n: xs.length };
+  }
+
+  function moments(values) {
+    const count = values.length;
+    const average = mean(values);
+    const variance = sum(values.map((value) => Math.pow(value - average, 2))) / count;
+    const std = Math.sqrt(variance);
+
+    const skew =
+      count < 3 || !std
+        ? 0
+        : sum(values.map((value) => Math.pow((value - average) / std, 3))) / count;
+
+    const kurt =
+      count < 4 || !variance
+        ? 0
+        : sum(values.map((value) => Math.pow(value - average, 4))) /
+            (count * variance * variance) -
+          3;
+
+    return { skew, kurt };
+  }
+
+  function shapeLabel(skew) {
+    if (skew > 1) return "ملتوي بشدة ناحية اليمين";
+    if (skew > 0.5) return "ملتوي ناحية اليمين";
+    if (skew < -1) return "ملتوي بشدة ناحية الشمال";
+    if (skew < -0.5) return "ملتوي ناحية الشمال";
+    return "متماثل تقريباً";
+  }
+
+  function quantile(sorted, percent) {
+    if (!sorted.length) return 0;
+    const position = (sorted.length - 1) * (percent / 100);
+    const low = Math.floor(position);
+    const high = Math.ceil(position);
+    if (low === high) return sorted[low];
+    return sorted[low] + (sorted[high] - sorted[low]) * (position - low);
+  }
+
+  function sampleStd(values) {
+    const count = values.length;
+    if (count < 2) return 0;
+    const average = mean(values);
+    return Math.sqrt(sum(values.map((value) => Math.pow(value - average, 2))) / (count - 1));
+  }
+
+  function confidenceInterval(values, confidence = 0.95) {
+    const count = values.length;
+    const average = mean(values);
+    if (count < 2) {
+      return { mean: average, std: 0, standard_error: 0, t_critical: 0, margin: 0, low: average, high: average, confidence: confidence * 100, n: count };
+    }
+    const std = sampleStd(values);
+    const standardError = std / Math.sqrt(count);
+    const critical = tCritical(count - 1, confidence);
+    const margin = critical * standardError;
+
+    return {
+      mean: average,
+      std,
+      standard_error: standardError,
+      t_critical: critical,
+      margin,
+      low: average - margin,
+      high: average + margin,
+      confidence: confidence * 100,
+      n: count,
+    };
+  }
+
+  const showP = (value) => (value < 0.0001 ? "< 0.0001" : `= ${value.toFixed(5)}`);
+
+  const signed = (value, digits = 1) =>
+    `${value < 0 ? "−" : "+"} ${fmt(Math.abs(value), digits)}`;
+
+  /* الأرقام العربية والفارسية لازم تتقرا زي اللاتينية بالظبط —
+     لأن بايثون بيقراها، ولو المتصفح مقراهاش النسختين هيختلفوا. */
+  const ARABIC_DIGITS = { "٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4", "٥": "5",
+    "٦": "6", "٧": "7", "٨": "8", "٩": "9", "۰": "0", "۱": "1", "۲": "2", "۳": "3",
+    "۴": "4", "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9", "٫": "." };
+
+  function toNumber(raw) {
+    if (typeof raw === "number") return Number.isFinite(raw) ? raw : null;
+    if (raw === null || raw === undefined) return null;
+
+    const text = String(raw)
+      .replace(/[٠-٩۰-۹٫]/g, (char) => ARABIC_DIGITS[char])
+      .replace(/,/g, "")
+      .trim();
+
+    if (!text) return null;
+    const value = Number(text);
+    return Number.isFinite(value) ? value : null;
+  }
+
+  /* =======================================================
+     المرحلة 1 — تجهيز البيانات
+     ======================================================= */
+  function phase1(rows) {
+    const dropped = { missing: 0, invalid_amount: 0, unknown_category: 0, duplicate: 0 };
+    const seen = new Set();
+    const records = [];
+
+    rows.forEach((row, index) => {
+      const day = String(row.date || row.day || "").trim();
+      const category = String(row.category || "").trim().toLowerCase();
+      const description = String(row.description || "").trim();
+      const rawAmount = row.amount;
+
+      if (!day || !category || rawAmount === undefined || rawAmount === null || rawAmount === "") {
+        dropped.missing += 1;
+        return;
+      }
+
+      const amount = toNumber(rawAmount);
+      if (amount === null || amount <= 0) {
+        dropped.invalid_amount += 1;
+        return;
+      }
+
+      if (!CATS.includes(category)) {
+        dropped.unknown_category += 1;
+        return;
+      }
+
+      const signature = `${day}|${category}|${round(amount)}|${description}`;
+      if (seen.has(signature)) {
+        dropped.duplicate += 1;
+        return;
+      }
+      seen.add(signature);
+
+      records.push({
+        row_id: index + 1,
+        day,
+        month: day.slice(0, 7),
+        category,
+        amount: round(amount),
+        description,
+      });
+    });
+
+    if (records.length < MIN_ROWS) {
+      throw new Error(
+        `الداتاست فيها ${records.length} صف بس، والتحليل محتاج ${MIN_ROWS} على الأقل عشان النتايج تبقى ذات دلالة.`
+      );
+    }
+
+    const months = [...new Set(records.map((record) => record.month))].sort();
+    const droppedTotal = Object.values(dropped).reduce((a, b) => a + b, 0);
+    const days = new Set(records.map((record) => record.day));
+
+    return {
+      records,
+      summary: {
+        raw_rows: rows.length,
+        clean_rows: records.length,
+        dropped_total: droppedTotal,
+        dropped_detail: dropped,
+        months,
+        days_covered: days.size,
+        variables: {
+          numerical: [
+            { name: "amount", label: "مبلغ المصروف", type: "متصل" },
+            { name: "day_index", label: "رقم اليوم في الشهر", type: "متقطع" },
+          ],
+          categorical: [
+            { name: "category", label: "التصنيف", levels: CATS.map((key) => LABELS[key]) },
+            { name: "month", label: "الشهر", levels: months },
+          ],
+        },
+        interpretation:
+          `اتحمّل ${rows.length} صف، واتشال منهم ${droppedTotal} ` +
+          `(${dropped.missing} ناقص، ${dropped.invalid_amount} مبلغ غلط، ` +
+          `${dropped.duplicate} مكرر، ${dropped.unknown_category} تصنيف مجهول). ` +
+          `باقي ${records.length} صف نضاف على ${months.length} شهر.`,
+      },
+    };
+  }
+
+  const amountsOf = (records, category) =>
+    records.filter((record) => !category || record.category === category).map((record) => record.amount);
+
+  function dailyTotals(records) {
+    const totals = {};
+    records.forEach((record) => {
+      totals[record.day] = (totals[record.day] || 0) + record.amount;
+    });
+    return Object.fromEntries(Object.entries(totals).sort(([a], [b]) => a.localeCompare(b)));
+  }
+
+  /* =======================================================
+     المرحلة 2 — الإحصاء الوصفي
+     ======================================================= */
+  function phase2(records) {
+    const values = amountsOf(records).sort((a, b) => a - b);
+    const count = values.length;
+    const average = mean(values);
+    const median = quantile(values, 50);
+
+    /* المنوال للبيانات المتصلة: أكتر فئة تكراراً */
+    const binWidth = 50;
+    const buckets = {};
+    values.forEach((value) => {
+      const key = Math.floor(value / binWidth);
+      buckets[key] = (buckets[key] || 0) + 1;
+    });
+    const topBucket = Object.entries(buckets).sort((a, b) => b[1] - a[1])[0];
+    const low = Number(topBucket[0]) * binWidth;
+
+    const variance = sum(values.map((value) => Math.pow(value - average, 2))) / (count - 1);
+    const std = Math.sqrt(variance);
+    const q1 = quantile(values, 25);
+    const q3 = quantile(values, 75);
+
+    const perCategory = CATS.map((key) => {
+      const group = amountsOf(records, key);
+      return {
+        key,
+        label: LABELS[key],
+        n: group.length,
+        mean: round(mean(group)),
+        median: round(quantile([...group].sort((a, b) => a - b), 50)),
+        std: round(sampleStd(group)),
+        total: round(sum(group)),
+      };
+    });
+
+    const gap = average - median;
+
+    return {
+      n: count,
+      mean: round(average),
+      median: round(median),
+      mode: {
+        value: round(low + binWidth / 2),
+        count: topBucket[1],
+        range: `${fmt(low)} — ${fmt(low + binWidth)}`,
+        bin_width: binWidth,
+      },
+      min: round(values[0]),
+      max: round(values[count - 1]),
+      range: round(values[count - 1] - values[0]),
+      variance: round(variance),
+      std: round(std),
+      cv: average ? round((std / average) * 100, 1) : 0,
+      q1: round(q1),
+      q2: round(median),
+      q3: round(q3),
+      iqr: round(q3 - q1),
+      per_category: perCategory,
+      interpretation:
+        `متوسط المصروف ${fmt(average)} ${CURRENCY} والوسيط ${fmt(median)}. ` +
+        (gap > std * 0.15
+          ? `المتوسط أعلى من الوسيط بـ ${fmt(gap)} — يعني فيه مصاريف كبيرة قليلة بتشد المتوسط لفوق، والوسيط أصدق في وصف يومك العادي.`
+          : "المتوسط والوسيط قريبين من بعض، يعني مفيش قيم متطرفة بتشوّه الصورة.") +
+        ` ونص مصاريفك بتقع بين ${fmt(q1)} و ${fmt(q3)} (المدى الربيعي = ${fmt(q3 - q1)}).`,
+    };
+  }
+
+  /* =======================================================
+     المرحلة 3 — تحليل التوزيع
+     ======================================================= */
+  function phase3(records, bins = 12) {
+    const values = amountsOf(records).sort((a, b) => a - b);
+    const count = values.length;
+    const low = values[0];
+    const high = values[count - 1];
+    const width = high > low ? (high - low) / bins : 1;
+
+    const frequency = [];
+    let cumulative = 0;
+    for (let index = 0; index < bins; index += 1) {
+      const start = low + index * width;
+      const end = start + width;
+      const inside = values.filter(
+        (value) => (value >= start && value < end) || (index === bins - 1 && value === high)
+      );
+      cumulative += inside.length;
+      frequency.push({
+        start: round(start),
+        end: round(end),
+        label: `${fmt(start)}—${fmt(end)}`,
+        count: inside.length,
+        percent: round((inside.length / count) * 100, 1),
+        cumulative_percent: round((cumulative / count) * 100, 1),
+      });
+    }
+
+    const q1 = quantile(values, 25);
+    const q3 = quantile(values, 75);
+    const iqr = q3 - q1;
+    const lowerFence = q1 - 1.5 * iqr;
+    const upperFence = q3 + 1.5 * iqr;
+    const inliers = values.filter((value) => value >= lowerFence && value <= upperFence);
+
+    const outliers = [...records]
+      .filter((record) => record.amount > upperFence || record.amount < lowerFence)
+      .sort((a, b) => b.amount - a.amount)
+      .map((record) => ({
+        amount: record.amount,
+        day: record.day,
+        label: LABELS[record.category],
+        description: record.description,
+      }));
+
+    const { skew, kurt } = moments(values);
+
+    return {
+      frequency,
+      box_plot: {
+        min: round(inliers.length ? Math.min(...inliers) : low),
+        q1: round(q1),
+        median: round(quantile(values, 50)),
+        q3: round(q3),
+        max: round(inliers.length ? Math.max(...inliers) : high),
+        iqr: round(iqr),
+        lower_fence: round(Math.max(lowerFence, 0)),
+        upper_fence: round(upperFence),
+      },
+      outliers: outliers.slice(0, 8),
+      outliers_count: outliers.length,
+      shape: {
+        skewness: round(skew, 3),
+        kurtosis: round(kurt, 3),
+        label: shapeLabel(skew),
+        tails: kurt > 0.5 ? "ذيول تقيلة (قيم متطرفة أكتر من الطبيعي)" : "ذيول عادية",
+      },
+      mean: round(mean(values)),
+      std: round(sampleStd(values)),
+      interpretation:
+        `التوزيع ${shapeLabel(skew)} (معامل التواء ${skew.toFixed(2)}). ` +
+        `حسب قاعدة الربيعات، أي مصروف فوق ${fmt(upperFence)} يعتبر شاذ — ` +
+        (outliers.length ? `ولقينا ${outliers.length} مصروف زي كده.` : "ومفيش ولا مصروف تعدّى الحد ده.") +
+        (skew > 0.5
+          ? " الالتواء لليمين طبيعي في بيانات المصاريف: أغلب الصرف صغير ومتكرر، وفيه صرفات كبيرة نادرة."
+          : ""),
+    };
+  }
+
+  /* =======================================================
+     المرحلة 4 — الجبر الخطي
+     ======================================================= */
+  function phase4(records, income) {
+    const spendVector = CATS.map((key) => round(sum(amountsOf(records, key))));
+    const weightVector = [1.0, 0.4, 1.5];
+    const dot = sum(spendVector.map((value, index) => value * weightVector[index]));
+    const totalSpend = sum(spendVector);
+    const magnitude = Math.sqrt(sum(spendVector.map((value) => value * value)));
+
+    const scalar = 1.1;
+    const scaledVector = spendVector.map((value) => round(value * scalar));
+
+    const months = [...new Set(records.map((record) => record.month))].sort();
+    const matrix = months.map((month) =>
+      CATS.map((key) =>
+        round(
+          sum(
+            records
+              .filter((record) => record.month === month && record.category === key)
+              .map((record) => record.amount)
+          )
+        )
+      )
+    );
+
+    const rowTotals = matrix.map((row) => round(sum(row)));
+    const columnTotals = CATS.map((_, index) =>
+      round(sum(matrix.map((row) => row[index])))
+    );
+
+    const ideal = [0.5, 0.3, 0.2];
+    const idealVector = ideal.map((share) => (income || totalSpend) * share);
+    const idealMagnitude = Math.sqrt(sum(idealVector.map((value) => value * value)));
+    const idealDot = sum(spendVector.map((value, index) => value * idealVector[index]));
+    const cosine = magnitude && idealMagnitude ? idealDot / (magnitude * idealMagnitude) : 0;
+    const angle = (Math.acos(Math.max(Math.min(cosine, 1), -1)) * 180) / Math.PI;
+
+    return {
+      labels: CATS.map((key) => LABELS[key]),
+      spend_vector: spendVector,
+      weight_vector: weightVector,
+      dot_product: round(dot),
+      magnitude: round(magnitude),
+      scalar,
+      scaled_vector: scaledVector,
+      scaled_total: round(sum(scaledVector)),
+      extra_cost: round(sum(scaledVector) - totalSpend),
+      matrix: {
+        rows: months,
+        columns: CATS.map((key) => LABELS[key]),
+        values: matrix,
+        row_totals: rowTotals,
+        column_totals: columnTotals,
+        shape: `${matrix.length}×${CATS.length}`,
+      },
+      alignment: {
+        ideal_vector: idealVector.map((value) => round(value)),
+        cosine: round(cosine, 4),
+        angle_degrees: round(angle, 2),
+      },
+      interpretation:
+        `متجه إنفاقك [${spendVector.map((value) => fmt(value)).join(", ")}] وطوله ${fmt(magnitude)}. ` +
+        `حاصل الضرب النقطي مع أوزان الأولوية = ${fmt(dot)} — الرقم ده بيوزن جنيه التوفير بـ 1.5 ` +
+        `وجنيه الكماليات بـ 0.4، فبيبقى مقياس لجودة إنفاقك مش حجمه. ` +
+        `الزاوية بين إنفاقك الفعلي والخطة المثالية ${angle.toFixed(1)}° ` +
+        (angle < 10
+          ? "(قريبة من صفر = إنفاقك يوازي الخطة تقريباً)."
+          : "(كل ما الزاوية كبرت، كل ما إنفاقك بعد عن شكل الخطة).") +
+        ` ولو زوّدت كل بند 10٪ هتدفع ${fmt(sum(scaledVector) - totalSpend)} زيادة.`,
+    };
+  }
+
+  /* =======================================================
+     المرحلة 5 — الاحتمالات
+     ======================================================= */
+  function phase5(records) {
+    const total = records.length;
+    const values = amountsOf(records);
+    const limit = round(mean(values) * 2);
+
+    const large = records.filter((record) => record.amount >= limit);
+    const wants = records.filter((record) => record.category === "wants");
+    const largeWants = wants.filter((record) => record.amount >= limit);
+
+    const pLarge = large.length / total;
+    const pWants = wants.length / total;
+    const pLargeGivenWants = wants.length ? largeWants.length / wants.length : 0;
+    const pWantsGivenLarge = large.length ? largeWants.length / large.length : 0;
+    const gap = Math.abs(pLargeGivenWants - pLarge);
+
+    const days = Object.keys(dailyTotals(records)).length;
+    const perDay = days ? total / days : 0;
+
+    let expectedValue = 0;
+    const expectedTable = [];
+    CATS.forEach((key) => {
+      const group = amountsOf(records, key);
+      if (!group.length) return;
+      const probability = group.length / total;
+      const groupMean = mean(group);
+      const contribution = probability * groupMean;
+      expectedValue += contribution;
+      expectedTable.push({
+        label: LABELS[key],
+        probability: round(probability, 4),
+        mean: round(groupMean),
+        contribution: round(contribution),
+      });
+    });
+
+    return {
+      threshold: limit,
+      simple: [
+        {
+          event: `المصروف ≥ ${fmt(limit)} ${CURRENCY}`,
+          notation: "P(A)",
+          count: large.length,
+          of: total,
+          probability: round(pLarge, 4),
+          percent: round(pLarge * 100, 1),
+        },
+        {
+          event: "المصروف من الكماليات",
+          notation: "P(B)",
+          count: wants.length,
+          of: total,
+          probability: round(pWants, 4),
+          percent: round(pWants * 100, 1),
+        },
+      ],
+      conditional: [
+        {
+          event: "مصروف كبير بشرط إنه كماليات",
+          notation: "P(A|B)",
+          count: largeWants.length,
+          of: wants.length,
+          probability: round(pLargeGivenWants, 4),
+          percent: round(pLargeGivenWants * 100, 1),
+        },
+        {
+          event: "كماليات بشرط إنه مصروف كبير",
+          notation: "P(B|A)",
+          count: largeWants.length,
+          of: large.length,
+          probability: round(pWantsGivenLarge, 4),
+          percent: round(pWantsGivenLarge * 100, 1),
+        },
+      ],
+      independence: {
+        p_a: round(pLarge, 4),
+        p_a_given_b: round(pLargeGivenWants, 4),
+        gap: round(gap, 4),
+        independent: gap < 0.05,
+      },
+      expected_value: {
+        per_expense: round(expectedValue),
+        per_day: round(expectedValue * perDay),
+        expenses_per_day: round(perDay),
+        table: expectedTable,
+      },
+      interpretation:
+        `احتمال إن أي مصروف يبقى كبير (≥ ${fmt(limit)}) هو ${(pLarge * 100).toFixed(1)}٪، ` +
+        `لكن لو عرفنا إنه كماليات الاحتمال بيبقى ${(pLargeGivenWants * 100).toFixed(1)}٪ — ` +
+        (gap >= 0.05
+          ? "يعني التصنيف بيغيّر الاحتمال فعلاً، والحدثين مش مستقلين."
+          : "الفرق صغير، يعني التصنيف تقريباً مش بيأثر على حجم المصروف.") +
+        ` والقيمة المتوقعة للمصروف الواحد ${fmt(expectedValue)} ${CURRENCY}، ` +
+        `يعني في اليوم متوقع تصرف حوالي ${fmt(expectedValue * perDay)}.`,
+    };
+  }
+
+  /* =======================================================
+     المرحلة 6 — المعاينة والاستدلال
+     ======================================================= */
+  function phase6(records) {
+    const population = amountsOf(records);
+    const size = population.length;
+    const sampleSize = Math.min(Math.max(10, Math.floor(size / 3)), 40, size);
+
+    const pick = (source, howMany) => {
+      const pool = [...source];
+      const chosen = [];
+      for (let index = 0; index < howMany; index += 1) {
+        chosen.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+      }
+      return chosen;
+    };
+
+    const sample = pick(population, sampleSize);
+    const populationMean = mean(population);
+    const populationStd = Math.sqrt(
+      sum(population.map((value) => Math.pow(value - populationMean, 2))) / size
+    );
+
+    const sampleMean = mean(sample);
+    const sampleDeviation = sampleStd(sample);
+    const standardError = sampleDeviation / Math.sqrt(sampleSize);
+
+    const error = sampleMean - populationMean;
+    const errorPercent = populationMean ? (Math.abs(error) / populationMean) * 100 : 0;
+
+    const repeatedMeans = [];
+    for (let run = 0; run < 400; run += 1) {
+      repeatedMeans.push(mean(pick(population, sampleSize)));
+    }
+    const meansMean = mean(repeatedMeans);
+    const meansStd = sampleStd(repeatedMeans);
+    const theoreticalSe = populationStd / Math.sqrt(sampleSize);
+
+    return {
+      population: {
+        definition: "كل المصاريف المسجّلة في الداتاست بعد التنظيف",
+        n: size,
+        mean: round(populationMean),
+        std: round(populationStd),
+      },
+      sample: {
+        definition: `عيّنة عشوائية بسيطة حجمها ${sampleSize} (كل مصروف له نفس فرصة الاختيار)`,
+        n: sampleSize,
+        mean: round(sampleMean),
+        std: round(sampleDeviation),
+        standard_error: round(standardError),
+        fraction: round((sampleSize / size) * 100, 1),
+      },
+      comparison: {
+        error: round(error),
+        error_percent: round(errorPercent, 2),
+        within_2se: Math.abs(error) <= 2 * standardError,
+      },
+      sampling_distribution: {
+        repeats: repeatedMeans.length,
+        mean_of_means: round(meansMean),
+        observed_se: round(meansStd),
+        theoretical_se: round(theoreticalSe),
+      },
+      interpretation:
+        `العيّنة (${sampleSize} مصروف = ${((sampleSize / size) * 100).toFixed(0)}٪ من الداتا) ` +
+        `دّت متوسط ${fmt(sampleMean)} مقابل ${fmt(populationMean)} للمجتمع كله — ` +
+        `فرق ${fmt(Math.abs(error))} فقط (${errorPercent.toFixed(1)}٪). ` +
+        (Math.abs(error) <= 2 * standardError
+          ? "الفرق ده جوه حدود الخطأ المعياري المتوقع، يعني العيّنة ممثّلة."
+          : "الفرق أكبر من المتوقع — العيّنة دي وقعت في طرف التوزيع.") +
+        ` ولما كررنا السحب 400 مرة، انحراف المتوسطات طلع ${meansStd.toFixed(1)} ` +
+        `والنظري σ/√n = ${theoreticalSe.toFixed(1)} — الاتنين قريبين، وده الـ CLT بيشتغل.`,
+    };
+  }
+
+  /* =======================================================
+     المرحلة 7 — فترات الثقة
+     ======================================================= */
+  function phase7(records) {
+    const amounts = amountsOf(records);
+    const daily = Object.values(dailyTotals(records));
+
+    const expenseCi = confidenceInterval(amounts);
+    const dailyCi = daily.length > 1 ? confidenceInterval(daily) : expenseCi;
+
+    const perCategory = CATS.map((key) => {
+      const group = amountsOf(records, key);
+      if (group.length < 2) return null;
+      const interval = confidenceInterval(group);
+      return {
+        label: LABELS[key],
+        n: interval.n,
+        mean: round(interval.mean),
+        low: round(interval.low),
+        high: round(interval.high),
+        margin: round(interval.margin),
+      };
+    }).filter(Boolean);
+
+    return {
+      expense_mean: {
+        confidence: 95,
+        n: expenseCi.n,
+        mean: round(expenseCi.mean),
+        std: round(expenseCi.std),
+        standard_error: round(expenseCi.standard_error),
+        t_critical: round(expenseCi.t_critical, 3),
+        margin: round(expenseCi.margin),
+        low: round(expenseCi.low),
+        high: round(expenseCi.high),
+      },
+      daily_mean: {
+        n: dailyCi.n,
+        mean: round(dailyCi.mean),
+        low: round(dailyCi.low),
+        high: round(dailyCi.high),
+        margin: round(dailyCi.margin),
+      },
+      per_category: perCategory,
+      interpretation:
+        `فترة الثقة 95٪ لمتوسط المصروف هي [${fmt(expenseCi.low)} — ${fmt(expenseCi.high)}] ${CURRENCY}. ` +
+        `معناها: لو كررنا الدراسة 100 مرة بنفس الطريقة، 95 مرة منهم الفترة اللي هتطلع هتكون شايلة ` +
+        `المتوسط الحقيقي جواها. وهامش الخطأ ±${fmt(expenseCi.margin)} — كل ما جمّعت بيانات أكتر، ` +
+        `كل ما الهامش ضاق (لأنه بيقسم على √n). ` +
+        `ومتوسط صرفك اليومي بين ${fmt(dailyCi.low)} و ${fmt(dailyCi.high)}.`,
+    };
+  }
+
+  /* =======================================================
+     المرحلة 8 — اختبار الفروض
+     ======================================================= */
+  function phase8(records, incomePerDay) {
+    const daily = Object.values(dailyTotals(records));
+    let values;
+    let reference;
+    let subject;
+
+    if (incomePerDay > 0 && daily.length >= 3) {
+      values = daily;
+      reference = incomePerDay;
+      subject = "متوسط الصرف اليومي";
+    } else {
+      values = amountsOf(records);
+      reference = Math.round(mean(values) / 10) * 10;
+      subject = "متوسط المصروف الواحد";
+    }
+
+    const count = values.length;
+    const average = mean(values);
+    const std = sampleStd(values);
+    const standardError = std / Math.sqrt(count);
+    const tStatistic = standardError ? (average - reference) / standardError : 0;
+    const df = count - 1;
+    const pValue = tTwoTailedP(tStatistic, df);
+    const reject = pValue < ALPHA;
+    const decision = reject ? "نرفض H₀" : "نفشل في رفض H₀";
+
+    return {
+      subject,
+      h0: `H₀: ${subject} = ${fmt(reference)} ${CURRENCY} (μ = μ₀)`,
+      h1: `H₁: ${subject} ≠ ${fmt(reference)} ${CURRENCY} (μ ≠ μ₀)`,
+      test: "اختبار t لعيّنة واحدة، ذو طرفين",
+      alpha: ALPHA,
+      n: count,
+      sample_mean: round(average),
+      reference: round(reference),
+      std: round(std),
+      standard_error: round(standardError),
+      t_statistic: round(tStatistic, 4),
+      df,
+      t_critical: round(tCritical(df, 1 - ALPHA), 3),
+      p_value: round(pValue, 6),
+      reject_null: reject,
+      decision,
+      conclusion:
+        `p-value ${showP(pValue)} ` +
+        (reject
+          ? `< α = ${ALPHA} → ${decision}. الفرق بين ${subject} الفعلي (${fmt(average)}) ` +
+            `والقيمة المرجعية (${fmt(reference)}) فرق حقيقي إحصائياً مش مجرد صدفة.`
+          : `> α = ${ALPHA} → ${decision}. البيانات مش بتدّينا دليل كافي إن ${subject} ` +
+            `الحقيقي مختلف عن ${fmt(reference)} — الفرق الملاحظ ممكن يكون صدفة.`),
+    };
+  }
+
+  /* =======================================================
+     المرحلة 9 — ANOVA
+     ======================================================= */
+  function phase9(records) {
+    const usable = CATS.map((key) => ({ name: LABELS[key], values: amountsOf(records, key) })).filter(
+      (group) => group.values.length >= 2
+    );
+
+    if (usable.length < 2) {
+      return { unavailable: "محتاج مجموعتين على الأقل، كل واحدة فيها قيمتين" };
+    }
+
+    const allValues = usable.flatMap((group) => group.values);
+    const totalCount = allValues.length;
+    const grandMean = mean(allValues);
+
+    let ssBetween = 0;
+    let ssWithin = 0;
+    const groups = usable.map((group) => {
+      const groupMean = mean(group.values);
+      ssBetween += group.values.length * Math.pow(groupMean - grandMean, 2);
+      ssWithin += sum(group.values.map((value) => Math.pow(value - groupMean, 2)));
+      return {
+        name: group.name,
+        n: group.values.length,
+        mean: round(groupMean),
+        std: round(sampleStd(group.values)),
+      };
+    });
+
+    const dfBetween = usable.length - 1;
+    const dfWithin = totalCount - usable.length;
+    const msBetween = dfBetween ? ssBetween / dfBetween : 0;
+    const msWithin = dfWithin ? ssWithin / dfWithin : 0;
+    const fStatistic = msWithin ? msBetween / msWithin : 0;
+    const pValue = fPValue(fStatistic, dfBetween, dfWithin);
+    const reject = pValue < ALPHA;
+    const decision = reject ? "نرفض H₀" : "نفشل في رفض H₀";
+
+    const ordered = [...groups].sort((a, b) => b.mean - a.mean);
+
+    return {
+      h0: "H₀: متوسطات المصروف متساوية في كل التصنيفات (μ₁ = μ₂ = μ₃)",
+      h1: "H₁: على الأقل تصنيف واحد متوسطه مختلف",
+      alpha: ALPHA,
+      groups,
+      grand_mean: round(grandMean),
+      table: {
+        between: { ss: round(ssBetween), df: dfBetween, ms: round(msBetween) },
+        within: { ss: round(ssWithin), df: dfWithin, ms: round(msWithin) },
+      },
+      f_statistic: round(fStatistic, 4),
+      p_value: round(pValue, 8),
+      reject_null: reject,
+      decision,
+      conclusion:
+        `F = ${fStatistic.toFixed(2)} و p-value ${showP(pValue)} ` +
+        (reject
+          ? `< α = ${ALPHA} → ${decision}. يعني التصنيف بيفرق فعلاً في حجم المصروف: ` +
+            `أعلى متوسط عند ${ordered[0].name} (${fmt(ordered[0].mean)}) ` +
+            `وأقل متوسط عند ${ordered[ordered.length - 1].name} (${fmt(ordered[ordered.length - 1].mean)}).`
+          : `> α = ${ALPHA} → ${decision}. مفيش دليل كافي إن متوسطات التصنيفات مختلفة — ` +
+            `التشتت جوه كل تصنيف أكبر من الفرق بينهم.`),
+    };
+  }
+
+  /* =======================================================
+     المرحلة 10 — التفاضل
+     ======================================================= */
+  function phase10(records, income) {
+    const all = dailyTotals(records);
+    const months = [...new Set(Object.keys(all).map((day) => day.slice(0, 7)))].sort();
+    if (!months.length) return { unavailable: "مفيش بيانات كفاية لدراسة معدل التغير." };
+
+    let target = months[months.length - 1];
+    let daily = Object.entries(all).filter(([day]) => day.startsWith(target));
+
+    if (daily.length < 5 && months.length > 1) {
+      target = months[months.length - 2];
+      daily = Object.entries(all).filter(([day]) => day.startsWith(target));
+    }
+
+    if (daily.length < 3) {
+      return { unavailable: "محتاجين 3 أيام مختلفة على الأقل لدراسة معدل التغير." };
+    }
+
+    const xs = daily.map((_, index) => index + 1);
+    let running = 0;
+    const cumulative = daily.map(([, value]) => {
+      running += value;
+      return round(running);
+    });
+
+    const line = linearRegression(xs, cumulative);
+    const curve = quadraticFit(xs, cumulative);
+
+    const lastDay = xs[xs.length - 1];
+    const derivativeEnd = 2 * curve.a * lastDay + curve.b;
+    const derivativeStart = 2 * curve.a * xs[0] + curve.b;
+    const secondDerivative = 2 * curve.a;
+    const averageRate =
+      lastDay > 1 ? (cumulative[cumulative.length - 1] - cumulative[0]) / (lastDay - xs[0]) : 0;
+
+    let reachDay = null;
+    if (income > 0 && curve.a !== 0) {
+      const a = curve.a;
+      const b = curve.b;
+      const c = curve.c - income;
+      const discriminant = b * b - 4 * a * c;
+      if (discriminant >= 0) {
+        const roots = [
+          (-b + Math.sqrt(discriminant)) / (2 * a),
+          (-b - Math.sqrt(discriminant)) / (2 * a),
+        ].filter((root) => root > 0);
+        if (roots.length) reachDay = round(Math.min(...roots), 1);
+      }
+    } else if (income > 0 && line.slope > 0) {
+      reachDay = round((income - line.intercept) / line.slope, 1);
+    }
+
+    const trend =
+      secondDerivative > 0.5
+        ? "بيتسارع — معدل صرفك اليومي بيزيد مع مرور الشهر"
+        : secondDerivative < -0.5
+        ? "بيهدى — معدل صرفك اليومي بيقل مع مرور الشهر"
+        : "ثابت تقريباً — بتصرف بمعدل متساوي";
+
+    return {
+      function: "S(t) = الإنفاق التراكمي بعد t يوم",
+      month: target,
+      days: daily.length,
+      points: xs.map((x, index) => ({ t: x, s: cumulative[index] })),
+      linear: {
+        equation: `S(t) = ${fmt(line.slope, 1)}·t ${signed(line.intercept)}`,
+        slope: round(line.slope),
+        intercept: round(line.intercept),
+        r_squared: round(line.r_squared, 4),
+        derivative: `S'(t) = ${fmt(line.slope, 1)} (معدل ثابت)`,
+      },
+      quadratic: {
+        equation: `S(t) = ${curve.a.toFixed(3)}·t² ${signed(curve.b, 2)}·t ${signed(curve.c)}`,
+        a: round(curve.a, 4),
+        b: round(curve.b, 3),
+        c: round(curve.c),
+        derivative: `S'(t) = ${(2 * curve.a).toFixed(3)}·t ${signed(curve.b, 2)}`,
+        second_derivative: round(secondDerivative, 4),
+      },
+      rates: {
+        average: round(averageRate),
+        at_start: round(derivativeStart),
+        at_end: round(derivativeEnd),
+        change: round(derivativeEnd - derivativeStart),
+      },
+      reach_income_day: reachDay,
+      trend,
+      interpretation:
+        `التحليل على شهر ${target}. دالة الإنفاق التراكمي ميلها ${fmt(line.slope)} ${CURRENCY}/يوم ` +
+        `(R² = ${line.r_squared.toFixed(2)} — كل ما قرب من 1 كل ما الخط بيوصف بياناتك أحسن). ` +
+        `المشتقة الأولى هي معدل صرفك اليومي: بدأت الشهر بـ ${fmt(derivativeStart)} ` +
+        `ووصلت لـ ${fmt(derivativeEnd)} في اليوم. ` +
+        `المشتقة التانية = ${secondDerivative.toFixed(2)}، يعني إنفاقك ${trend}.` +
+        (reachDay ? ` وبالمعدل ده متوقع توصل لحد دخلك في اليوم ${reachDay.toFixed(0)} من الشهر.` : ""),
+    };
+  }
+
+  /* =======================================================
+     المرحلة 11 و 12
+     ======================================================= */
+  function phase11(records, phases) {
+    const daily = dailyTotals(records);
+    const days = Object.keys(daily);
+
+    return {
+      bar: {
+        title: "إجمالي الإنفاق حسب التصنيف",
+        why: "المقارنة بين فئات — العمود البياني أوضح حاجة للمقارنة الفئوية",
+        labels: CATS.map((key) => LABELS[key]),
+        values: CATS.map((key) => round(sum(amountsOf(records, key)))),
+      },
+      histogram: {
+        title: "توزيع مبالغ المصاريف",
+        why: "بيوري شكل التوزيع: فين بتتكدس مصاريفك وفين الذيل",
+        bins: phases.phase3.frequency,
+      },
+      box: {
+        title: "البوكس بلوت — الأرباع والشواذ",
+        why: "بيلخّص خمس أرقام + بيحدد الشواذ بصرياً في رسمة واحدة",
+        data: phases.phase3.box_plot,
+        outliers: phases.phase3.outliers.map((item) => item.amount),
+      },
+      scatter: {
+        title: "اليوم مقابل إجمالي إنفاقه",
+        why: "بيكشف هل فيه علاقة بين ترتيب اليوم وحجم الصرف",
+        points: days.map((day, index) => ({ x: index + 1, y: round(daily[day]) })),
+      },
+      line: {
+        title: "الإنفاق التراكمي عبر الشهر",
+        why: "بيوري اتجاه الصرف مع الوقت — وميل الخط هو المشتقة",
+        points: phases.phase10.points || [],
+      },
+      interpretation:
+        "الرسومات مختارة بحيث كل واحدة تجاوب على سؤال مختلف: العمود للمقارنة، " +
+        "الهيستوجرام للشكل، البوكس بلوت للشواذ، الانتشار للعلاقة، والخط للاتجاه.",
+    };
+  }
+
+  function phase12(phases) {
+    const descriptive = phases.phase2;
+    const distribution = phases.phase3;
+    const probability = phases.phase5;
+    const sampling = phases.phase6;
+    const interval = phases.phase7.expense_mean;
+    const test = phases.phase8;
+    const anova = phases.phase9 || {};
+    const calculus = phases.phase10 || {};
+
+    const statistical = [
+      { name: "اختبار t", result: `t = ${test.t_statistic}, p ${showP(test.p_value)}`, decision: test.decision },
+    ];
+    if (anova.f_statistic !== undefined) {
+      statistical.push({
+        name: "ANOVA",
+        result: `F = ${anova.f_statistic}, p ${showP(anova.p_value)}`,
+        decision: anova.decision,
+      });
+    }
+
+    const relationships = [];
+    if (calculus.linear) {
+      relationships.push(
+        `العلاقة بين اليوم والإنفاق التراكمي خطية بدرجة R² = ${calculus.linear.r_squared} ` +
+          `وميل ${fmt(calculus.linear.slope)} ${CURRENCY}/يوم.`
+      );
+    }
+    if (!probability.independence.independent) {
+      relationships.push("التصنيف والمبلغ مش مستقلين — نوع المصروف بيأثر على حجمه.");
+    }
+
+    return {
+      findings: [
+        `متوسط المصروف ${fmt(descriptive.mean)} ${CURRENCY} والوسيط ${fmt(descriptive.median)}، بمعامل اختلاف ${descriptive.cv}٪.`,
+        `التوزيع ${distribution.shape.label} وفيه ${distribution.outliers_count} مصروف شاذ بقاعدة الربيعات.`,
+        `احتمال المصروف الكبير ${probability.simple[0].percent}٪، والقيمة المتوقعة للمصروف الواحد ${fmt(probability.expected_value.per_expense)}.`,
+        `عيّنة من ${sampling.sample.n} مصروف قدّرت المتوسط بفرق ${sampling.comparison.error_percent}٪ عن المجتمع كله.`,
+        `فترة الثقة 95٪ للمتوسط: [${fmt(interval.low)} — ${fmt(interval.high)}].`,
+      ],
+      statistical_results: statistical,
+      relationships: relationships.length ? relationships : ["مفيش علاقات ذات دلالة واضحة في البيانات الحالية."],
+      calculus: calculus.interpretation || "—",
+      conclusion:
+        `البيانات بتقول إن إنفاقك ${distribution.shape.label} — أغلبه صغير ومتكرر مع صرفات كبيرة نادرة. ` +
+        (anova.reject_null
+          ? "وتحليل التباين أثبت إن التصنيف بيفرق فعلاً في حجم المصروف، "
+          : "وتحليل التباين مالقاش فرق مؤكد بين التصنيفات، ") +
+        (calculus.trend ? `وإنفاقك ${calculus.trend}.` : "") +
+        " التوصية العملية: راقب الذيل — الصرفات الكبيرة النادرة هي اللي بتكسر الميزانية، " +
+        "مش المصاريف اليومية الصغيرة.",
+      improvements: [
+        "جمع بيانات لشهور أكتر عشان اختبارات الفروض تبقى أقوى إحصائياً",
+        "إضافة متغيرات جديدة (يوم الأسبوع، طريقة الدفع) لتحليل أعمق",
+        "استخدام اختبار Tukey بعد ANOVA لتحديد أي تصنيفين بالظبط مختلفين",
+        "بناء نموذج انحدار متعدد للتنبؤ بالمصروف من أكتر من متغيّر",
+      ],
+    };
+  }
+
+  const TITLES = {
+    phase1: "١. جمع البيانات وتجهيزها",
+    phase2: "٢. الإحصاء الوصفي",
+    phase3: "٣. تحليل التوزيع",
+    phase4: "٤. الجبر الخطي",
+    phase5: "٥. الاحتمالات",
+    phase6: "٦. المعاينة والاستدلال",
+    phase7: "٧. فترات الثقة",
+    phase8: "٨. اختبار الفروض",
+    phase9: "٩. تحليل التباين ANOVA",
+    phase10: "١٠. التفاضل",
+    phase11: "١١. التصوّر البياني",
+    phase12: "١٢. النتائج والخلاصة",
+  };
+
+  function runPipeline(rows, income) {
+    const prepared = phase1(rows);
+    const records = prepared.records;
+    const phases = { phase1: prepared.summary };
+
+    const steps = [
+      ["phase2", () => phase2(records)],
+      ["phase3", () => phase3(records)],
+      ["phase4", () => phase4(records, income)],
+      ["phase5", () => phase5(records)],
+      ["phase6", () => phase6(records)],
+      ["phase7", () => phase7(records)],
+      ["phase8", () => phase8(records, income ? income / 30 : 0)],
+      ["phase9", () => phase9(records)],
+      ["phase10", () => phase10(records, income)],
+    ];
+
+    steps.forEach(([key, run]) => {
+      try {
+        phases[key] = run();
+      } catch (error) {
+        phases[key] = { error: `المرحلة دي وقفت: ${error.message}` };
+      }
+    });
+
+    phases.phase11 = phase11(records, phases);
+    phases.phase12 = phase12(phases);
+
+    return {
+      generated_at: new Date().toISOString().slice(0, 10),
+      rows: records.length,
+      currency: CURRENCY,
+      titles: TITLES,
+      ...phases,
+    };
+  }
+
+  /* بيقرأ ملف CSV نصّي لصفوف — نفس أعمدة data/dataset.csv */
+  function parseCsv(text) {
+    const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).filter((line) => line.trim());
+    if (!lines.length) return [];
+
+    const headers = lines[0].split(",").map((head) => head.trim().toLowerCase());
+
+    return lines.slice(1).map((line) => {
+      /* بيحترم علامات التنصيص عشان الوصف اللي فيه فاصلة */
+      const cells = [];
+      let current = "";
+      let quoted = false;
+
+      for (const char of line) {
+        if (char === '"') quoted = !quoted;
+        else if (char === "," && !quoted) {
+          cells.push(current);
+          current = "";
+        } else current += char;
+      }
+      cells.push(current);
+
+      return Object.fromEntries(headers.map((head, index) => [head, (cells[index] || "").trim()]));
+    });
+  }
+
+  return { runPipeline, parseCsv };
+})();
+
+</script>
+<script>
+/* ===== offline.js ===== */
+/* =========================================================
+   offline.js — تشغيل الصفحة بالدبل كليك من غير سيرفر بايثون
+
+   لما تفتح index.html مباشرة (file://) مفيش سيرفر يرد على /api/*،
+   فالملف ده بيقوم بنفس دور بايثون جوه المتصفح: نفس المعادلات، نفس
+   أسماء الحقول، ونفس الردود — عشان app.js ميحسّش بالفرق.
+
+   لما تشغّل `python run_web.py` الملف ده بيقعد ساكت والسيرفر هو اللي
+   بيشتغل (بايثون يفضل هو الأصل).
+   ========================================================= */
+
+(function () {
+  "use strict";
+
+  const OFFLINE = location.protocol === "file:";
+  window.IS_OFFLINE = OFFLINE;
+  if (!OFFLINE) return;
+
+  const DATA = window.OFFLINE_DATA;
+  const CATS = DATA.categories.map((item) => item.key);
+  const LABELS = Object.fromEntries(DATA.categories.map((item) => [item.key, item.label]));
+
+  /* =======================================================
+     1) رياضيات التوزيعات — نفس اللي في stats_engine.py
+     ======================================================= */
+
+  /* تقريب erf (Abramowitz & Stegun 7.1.26) — مفيش erf جاهزة في JS */
+  function erf(x) {
+    const sign = x < 0 ? -1 : 1;
+    x = Math.abs(x);
+    const t = 1 / (1 + 0.3275911 * x);
+    const y =
+      1 -
+      ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t +
+        0.254829592) *
+        t *
+        Math.exp(-x * x);
+    return sign * y;
+  }
+
+  /* lgamma بطريقة Lanczos — أساس بيتا وجاما */
+  const LANCZOS = [
+    676.5203681218851, -1259.1392167224028, 771.32342877765313,
+    -176.61502916214059, 12.507343278686905, -0.13857109526572012,
+    9.9843695780195716e-6, 1.5056327351493116e-7,
+  ];
+
+  function lgamma(x) {
+    if (x < 0.5) {
+      return Math.log(Math.PI / Math.sin(Math.PI * x)) - lgamma(1 - x);
+    }
+    x -= 1;
+    let a = 0.99999999999980993;
+    const t = x + 7.5;
+    LANCZOS.forEach((value, index) => {
+      a += value / (x + index + 1);
+    });
+    return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+  }
+
+  const logComb = (n, k) => lgamma(n + 1) - lgamma(k + 1) - lgamma(n - k + 1);
+
+  const M = {
+    bernoulliPmf: (k, p) => (k === 1 ? p : k === 0 ? 1 - p : 0),
+
+    binomialPmf(k, n, p) {
+      if (k < 0 || k > n) return 0;
+      if (p <= 0) return k === 0 ? 1 : 0;
+      if (p >= 1) return k === n ? 1 : 0;
+      return Math.exp(logComb(n, k) + k * Math.log(p) + (n - k) * Math.log(1 - p));
+    },
+
+    poissonPmf(k, lam) {
+      if (lam <= 0 || k < 0) return 0;
+      return Math.exp(-lam + k * Math.log(lam) - lgamma(k + 1));
+    },
+
+    geometricPmf(k, p) {
+      if (k < 1 || p <= 0 || p > 1) return 0;
+      return Math.pow(1 - p, k - 1) * p;
+    },
+
+    normalPdf(x, mu, sigma) {
+      if (sigma <= 0) return 0;
+      return (
+        (1 / (sigma * Math.sqrt(2 * Math.PI))) *
+        Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2))
+      );
+    },
+
+    normalCdf(x, mu = 0, sigma = 1) {
+      if (sigma <= 0) return x >= mu ? 1 : 0;
+      return 0.5 * (1 + erf((x - mu) / (sigma * Math.SQRT2)));
+    },
+
+    uniformPdf: (x, low, high) =>
+      high <= low ? 0 : x >= low && x <= high ? 1 / (high - low) : 0,
+
+    exponentialPdf: (x, rate) => (rate <= 0 || x < 0 ? 0 : rate * Math.exp(-rate * x)),
+
+    exponentialCdf: (x, rate) => (rate <= 0 || x < 0 ? 0 : 1 - Math.exp(-rate * x)),
+
+    betaPdf(x, a, b) {
+      if (x <= 0 || x >= 1 || a <= 0 || b <= 0) return 0;
+      const logBeta = lgamma(a) + lgamma(b) - lgamma(a + b);
+      return Math.exp((a - 1) * Math.log(x) + (b - 1) * Math.log(1 - x) - logBeta);
+    },
+
+    gammaPdf(x, shape, scale) {
+      if (x <= 0 || shape <= 0 || scale <= 0) return 0;
+      return Math.exp(
+        (shape - 1) * Math.log(x) - x / scale - lgamma(shape) - shape * Math.log(scale)
+      );
+    },
+  };
+
+  /* عيّنة من التوزيع الطبيعي (Box–Muller) — للمحاكاة */
+  function randomNormal(mu, sigma) {
+    let u = 0;
+    let v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return mu + sigma * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  const round = (value, digits = 2) => {
+    const factor = Math.pow(10, digits);
+    return Math.round(value * factor) / factor;
+  };
+
+  function describe(values) {
+    const count = values.length;
+    if (!count) return { count: 0, mean: 0, median: 0, std: 0, min: 0, max: 0 };
+
+    const sorted = [...values].sort((a, b) => a - b);
+    const mean = values.reduce((total, value) => total + value, 0) / count;
+    const variance =
+      count > 1
+        ? values.reduce((total, value) => total + Math.pow(value - mean, 2), 0) / (count - 1)
+        : 0;
+    const middle = Math.floor(count / 2);
+
+    return {
+      count,
+      mean,
+      median: count % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2,
+      std: Math.sqrt(variance),
+      min: sorted[0],
+      max: sorted[count - 1],
+    };
+  }
+
+  function percentile(sorted, percent) {
+    if (!sorted.length) return 0;
+    const position = (sorted.length - 1) * (percent / 100);
+    const low = Math.floor(position);
+    const high = Math.ceil(position);
+    if (low === high) return sorted[low];
+    return sorted[low] + (sorted[high] - sorted[low]) * (position - low);
+  }
+
+  /* =======================================================
+     2) حالة البرنامج (نفس دور BudgetManager)
+     ======================================================= */
+  const STORAGE_KEY = "budget_app_offline";
+
+  const State = {
+    income: 0,
+    mode: DATA.default_mode,
+    split: { ...DATA.split_modes[DATA.default_mode] },
+    expenses: [],
+    nextId: 1,
+    month: new Date().toISOString().slice(0, 7),
+
+    save() {
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            income: this.income,
+            mode: this.mode,
+            split: this.split,
+            expenses: this.expenses,
+            nextId: this.nextId,
+            month: this.month,
+          })
+        );
+      } catch (error) {
+        /* بعض المتصفحات بتقفل التخزين على file:// — البرنامج بيكمل في الذاكرة */
+      }
+    },
+
+    load() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (saved && saved.month === this.month) Object.assign(this, saved);
+      } catch (error) {
+        /* بيانات قديمة أو تالفة — بنبدأ من الأول */
+      }
+    },
+  };
+
+  State.load();
+
+  const allocation = () =>
+    Object.fromEntries(CATS.map((name) => [name, round(State.income * State.split[name])]));
+
+  const spentByCategory = () => {
+    const totals = Object.fromEntries(CATS.map((name) => [name, 0]));
+    State.expenses.forEach((expense) => {
+      totals[expense.category] += expense.amount;
+    });
+    return Object.fromEntries(CATS.map((name) => [name, round(totals[name])]));
+  };
+
+  const totalSpent = () =>
+    round(State.expenses.reduce((total, expense) => total + expense.amount, 0));
+
+  const amountsOf = (category) =>
+    State.expenses
+      .filter((expense) => !category || expense.category === category)
+      .map((expense) => expense.amount);
+
+  function elapsedDays() {
+    const today = new Date();
+    const dates = new Set(State.expenses.map((expense) => expense.date));
+    return Math.max(today.getDate(), dates.size, 1);
+  }
+
+  function daysInMonth() {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  }
+
+  function statusOf(ratio) {
+    if (ratio > 1) return "over";
+    if (ratio >= DATA.warning_threshold) return "near";
+    return "ok";
+  }
+
+  function buildState() {
+    const plan = allocation();
+    const spent = spentByCategory();
+
+    const lines = CATS.map((name) => {
+      const planned = plan[name];
+      const used = spent[name];
+      const ratio = planned > 0 ? round(used / planned, 4) : 0;
+      return {
+        key: name,
+        label: LABELS[name],
+        percent_of_income: Math.round(State.split[name] * 100),
+        planned,
+        spent: used,
+        remaining: round(planned - used),
+        ratio,
+        status: statusOf(ratio),
+      };
+    });
+
+    const warnings = lines
+      .filter((line) => line.status !== "ok")
+      .map((line) => ({
+        category: line.key,
+        level: line.status === "over" ? "danger" : "warning",
+        message:
+          line.status === "over"
+            ? `عدّيت خطة ${line.label}: صرفت ${Math.round(line.spent)} والخطة ${Math.round(line.planned)}`
+            : `قربت تخلّص ميزانية ${line.label} — استهلكت ${Math.round(line.ratio * 100)}٪`,
+      }));
+
+    return {
+      month: State.month,
+      income: State.income,
+      mode: State.mode,
+      currency: DATA.currency,
+      lines,
+      total_spent: totalSpent(),
+      actual_savings: round(State.income - totalSpent()),
+      planned_savings: plan.savings,
+      on_plan: lines.every((line) => line.ratio <= 1),
+      warnings,
+      expenses_count: State.expenses.length,
+      top_expenses: [...State.expenses]
+        .sort((a, b) => b.amount - a.amount)
+        .slice(0, 3)
+        .map((expense) => ({
+          description: expense.description || LABELS[expense.category],
+          amount: expense.amount,
+        })),
+      expenses: [...State.expenses].reverse().map((expense) => ({
+        id: expense.id,
+        amount: expense.amount,
+        category: expense.category,
+        label: LABELS[expense.category],
+        description: expense.description,
+        date: expense.date,
+      })),
+      categories: DATA.categories,
+      modes: Object.keys(DATA.split_modes),
+    };
+  }
+
+  /* =======================================================
+     3) التحليل الإحصائي
+     ======================================================= */
+  const MIN_SAMPLE = 5;
+  const notEnough = (what, have, need) => ({
+    unavailable: `البيانات مش كفاية لـ${what}: عندك ${have} والمطلوب ${need} على الأقل.`,
+  });
+
+  function anomalyReport() {
+    const amounts = amountsOf();
+    if (amounts.length < MIN_SAMPLE) return notEnough("كشف المصاريف الشاذة", amounts.length, MIN_SAMPLE);
+
+    const stats = describe(amounts);
+    const sigma = stats.std || 1e-9;
+
+    const within = (sigmas) =>
+      round(
+        (amounts.filter((value) => Math.abs(value - stats.mean) <= sigmas * sigma).length /
+          amounts.length) *
+          100,
+        1
+      );
+
+    const flagged = State.expenses
+      .map((expense) => ({
+        id: expense.id,
+        amount: expense.amount,
+        z: round((expense.amount - stats.mean) / sigma, 2),
+        description: expense.description,
+        label: LABELS[expense.category],
+      }))
+      .filter((item) => Math.abs(item.z) >= 2)
+      .sort((a, b) => Math.abs(b.z) - Math.abs(a.z))
+      .map((item) => ({
+        ...item,
+        message: `${item.description || item.label} بمبلغ ${Math.round(item.amount)} — ${
+          item.z > 0 ? "أعلى" : "أقل"
+        } من متوسطك بـ ${Math.abs(item.z)} انحراف`,
+      }));
+
+    return {
+      stats: { mean: round(stats.mean), std: round(sigma), count: stats.count },
+      normal_range: { low: round(stats.mean - 2 * sigma), high: round(stats.mean + 2 * sigma) },
+      empirical_rule: {
+        observed: { "1σ": within(1), "2σ": within(2), "3σ": within(3) },
+        expected: { "1σ": 68, "2σ": 95, "3σ": 99.7 },
+      },
+      flagged,
+    };
+  }
+
+  /* إجمالي المصروف لكل يوم عدّى من الشهر — واليوم اللي مصرفتش فيه = صفر.
+     مهم جداً: لو حسبنا المتوسط على الأيام اللي فيها صرف بس، التوقّع بيطلع
+     أضعاف الحقيقة. نفس منطق daily_totals في stats_engine.py */
+  function dailyTotals() {
+    const byDate = {};
+    State.expenses.forEach((expense) => {
+      byDate[expense.date] = (byDate[expense.date] || 0) + expense.amount;
+    });
+
+    const prefix = State.month;
+    const passed = elapsedDays();
+    const values = [];
+    for (let day = 1; day <= passed; day += 1) {
+      const key = `${prefix}-${String(day).padStart(2, "0")}`;
+      values.push(round(byDate[key] || 0));
+    }
+    return values;
+  }
+
+  function forecast(simulations = 4000) {
+    if (State.income <= 0) {
+      return { unavailable: "حدد الدخل الشهري الأول عشان نقدر نتوقّع." };
+    }
+
+    const values = dailyTotals();
+    if (values.length < 3) return notEnough("توقّع آخر الشهر", values.length, 3);
+
+    const totalDays = daysInMonth();
+    const passed = values.length;
+    const remaining = Math.max(totalDays - passed, 0);
+    const current = totalSpent();
+
+    const stats = describe(values);
+    const muDay = stats.mean;
+    const sigmaDay = stats.std;
+
+    /* (أ) مونت كارلو: بنعيد سحب أيام عشوائية من الأيام اللي عدّت (Bootstrap) */
+    const projections = [];
+    if (remaining === 0) {
+      projections.push(current);
+    } else {
+      for (let run = 0; run < simulations; run += 1) {
+        let future = 0;
+        for (let day = 0; day < remaining; day += 1) {
+          future += values[Math.floor(Math.random() * values.length)];
+        }
+        projections.push(current + future);
+      }
+    }
+
+    const sorted = [...projections].sort((a, b) => a - b);
+    const overIncome = projections.filter((value) => value > State.income).length;
+
+    /* (ب) تقريب CLT: مجموع أيام كتير ≈ طبيعي بمتوسط n·μ وانحراف σ√n */
+    const cltMean = current + remaining * muDay;
+    const cltStd = sigmaDay * Math.sqrt(remaining);
+    const cltRisk =
+      cltStd > 0
+        ? (1 - M.normalCdf(State.income, cltMean, cltStd)) * 100
+        : (cltMean > State.income) * 100;
+
+    return {
+      days_passed: passed,
+      days_remaining: remaining,
+      days_total: totalDays,
+      current_total: current,
+      income: round(State.income),
+      daily_mean: round(muDay),
+      daily_std: round(sigmaDay),
+      simulations: projections.length,
+      expected_total: round(projections.reduce((a, b) => a + b, 0) / projections.length),
+      p05: round(percentile(sorted, 5)),
+      p50: round(percentile(sorted, 50)),
+      p95: round(percentile(sorted, 95)),
+      risk_over_income: round((overIncome / projections.length) * 100, 1),
+      clt_mean: round(cltMean),
+      clt_std: round(cltStd),
+      clt_risk: round(cltRisk, 1),
+      standard_error: passed ? round(sigmaDay / Math.sqrt(passed)) : 0,
+      categories: categoryRisk(remaining),
+    };
+  }
+
+  /* احتمال إن كل تصنيف يعدّي خطته لحد آخر الشهر */
+  function categoryRisk(remaining) {
+    const plan = allocation();
+    const spent = spentByCategory();
+    const passed = Math.max(elapsedDays(), 1);
+
+    return CATS.map((name) => {
+      const values = amountsOf(name);
+      const planned = plan[name];
+      const used = spent[name];
+      let probability;
+
+      if (used > planned) {
+        probability = 100;
+      } else if (!values.length || remaining === 0) {
+        probability = 0;
+      } else {
+        const rate = values.length / passed;                 // مرات الصرف في اليوم
+        const stats = describe(values);
+        const expectedExtra = rate * remaining * stats.mean;
+        const sigmaExtra = stats.std * Math.sqrt(Math.max(rate * remaining, 1e-9));
+        probability =
+          sigmaExtra > 0
+            ? (1 - M.normalCdf(planned - used, expectedExtra, sigmaExtra)) * 100
+            : (used + expectedExtra > planned) * 100;
+      }
+
+      return {
+        key: name,
+        label: LABELS[name],
+        planned,
+        spent: used,
+        risk: round(Math.min(Math.max(probability, 0), 100), 1),
+      };
+    });
+  }
+
+  function spendingRhythm() {
+    const count = State.expenses.length;
+    if (count < MIN_SAMPLE) return notEnough("تحليل إيقاع الصرف", count, MIN_SAMPLE);
+
+    const passed = elapsedDays();
+    const lam = count / passed;
+
+    return {
+      expenses_count: count,
+      days_passed: passed,
+      lambda: round(lam),
+      no_spend_day: round(M.poissonPmf(0, lam) * 100, 1),
+      two_or_more: round((1 - M.poissonPmf(0, lam) - M.poissonPmf(1, lam)) * 100, 1),
+      mean_gap_days: round(1 / lam),
+      within_1_day: round(M.exponentialCdf(1, lam) * 100, 1),
+      within_3_days: round(M.exponentialCdf(3, lam) * 100, 1),
+    };
+  }
+
+  function commitmentReport() {
+    /* الوضع الأوفلاين بيشتغل على الشهر الحالي بس، والتحليل ده محتاج تاريخ شهور */
+    return {
+      unavailable:
+        "تحليل الالتزام محتاج أكتر من شهر متسجّل — شغّل نسخة بايثون (python run_web.py) عشان تحفظ شهورك.",
+    };
+  }
+
+  function cltExperiment() {
+    const amounts = amountsOf();
+    if (amounts.length < MIN_SAMPLE) return notEnough("تجربة النهاية المركزية", amounts.length, MIN_SAMPLE);
+
+    const stats = describe(amounts);
+    const experiments = [2, 5, 10, 30].map((size) => {
+      const means = [];
+      for (let run = 0; run < 1200; run += 1) {
+        let total = 0;
+        for (let pick = 0; pick < size; pick += 1) {
+          total += amounts[Math.floor(Math.random() * amounts.length)];
+        }
+        means.push(total / size);
+      }
+      const meanStats = describe(means);
+      return {
+        n: size,
+        mean_of_means: round(meanStats.mean),
+        observed_se: round(meanStats.std),
+        theoretical_se: round(stats.std / Math.sqrt(size)),
+      };
+    });
+
+    return {
+      population: { mean: round(stats.mean), std: round(stats.std), count: stats.count },
+      experiments,
+    };
+  }
+
+
+
+
+
+
+  /* =======================================================
+     5) الراوتر — نفس مسارات web/server.py
+     ======================================================= */
+  function requireIncome() {
+    if (State.income <= 0) throw new Error("لازم تحدد الدخل الشهري الأول قبل ما تسجل مصاريف.");
+  }
+
+  function validate(amount, category) {
+    const value = Number(amount);
+    if (!Number.isFinite(value) || value <= 0) {
+      throw new Error(`المبلغ غير صحيح: ${amount} — لازم يكون رقم أكبر من صفر`);
+    }
+    if (!CATS.includes(category)) {
+      throw new Error(`تصنيف غير معروف: ${category}`);
+    }
+    return value;
+  }
+
+  const ROUTES = {
+    "/api/state": () => buildState(),
+    "/api/analysis": (payload) => {
+      /* الأوفلاين مش بيقدر يقرأ data/dataset.csv لوحده (المتصفح بيمنع
+         قراءة الملفات من file://)، فالمستخدم بيرفع الملف بنفسه. */
+      const rows = payload.rows && payload.rows.length
+        ? payload.rows
+        : State.expenses.map((expense) => ({
+            date: expense.date,
+            category: expense.category,
+            amount: expense.amount,
+            description: expense.description,
+          }));
+
+      if (payload.source === "dataset" && !(payload.rows && payload.rows.length)) {
+        throw new Error(
+          "في الوضع بدون سيرفر، دوس «ارفع CSV» واختار ملف data/dataset.csv من جهازك."
+        );
+      }
+
+      const result = window.OfflineAnalysis.runPipeline(rows, State.income);
+      result.source = payload.source || "app";
+      return result;
+    },
+
+
+    "/api/income": (payload) => {
+      const value = Number(payload.income);
+      if (!Number.isFinite(value) || value <= 0) throw new Error("الدخل لازم يكون رقم أكبر من صفر");
+
+      State.income = value;
+      const mode = payload.mode || DATA.default_mode;
+
+      if (DATA.split_modes[mode]) {
+        State.mode = mode;
+        State.split = { ...DATA.split_modes[mode] };
+      } else if (payload.custom) {
+        const total = CATS.reduce((sum, name) => sum + Number(payload.custom[name] || 0), 0);
+        if (Math.round(total) !== 100 && Math.round(total * 100) !== 100) {
+          throw new Error(`نسب التقسيم مجموعها ${total} والمفروض 100`);
+        }
+        const divisor = total > 1.5 ? 100 : 1;
+        State.mode = "custom";
+        State.split = Object.fromEntries(
+          CATS.map((name) => [name, Number(payload.custom[name]) / divisor])
+        );
+      }
+
+      State.save();
+      return buildState();
+    },
+
+    "/api/expense": (payload) => {
+      requireIncome();
+      const amount = validate(payload.amount, payload.category);
+      State.expenses.push({
+        id: State.nextId,
+        amount,
+        category: payload.category,
+        description: String(payload.description || "").trim().slice(0, 100),
+        date: new Date().toISOString().slice(0, 10),
+      });
+      State.nextId += 1;
+      State.save();
+      return buildState();
+    },
+
+    "/api/expense/update": (payload) => {
+      const expense = State.expenses.find((item) => item.id === Number(payload.id));
+      if (!expense) throw new Error(`مفيش مصروف بالرقم ${payload.id}.`);
+
+      const category = payload.category || expense.category;
+      expense.amount = validate(
+        payload.amount === undefined || payload.amount === null ? expense.amount : payload.amount,
+        category
+      );
+      expense.category = category;
+      if (payload.description !== undefined && payload.description !== null) {
+        expense.description = String(payload.description).trim().slice(0, 100);
+      }
+      State.save();
+      return buildState();
+    },
+
+    "/api/expense/delete": (payload) => {
+      const index = State.expenses.findIndex((item) => item.id === Number(payload.id));
+      if (index === -1) throw new Error(`مفيش مصروف بالرقم ${payload.id}.`);
+      State.expenses.splice(index, 1);
+      State.save();
+      return buildState();
+    },
+
+    "/api/reset": () => {
+      State.income = 0;
+      State.expenses = [];
+      State.nextId = 1;
+      State.mode = DATA.default_mode;
+      State.split = { ...DATA.split_modes[DATA.default_mode] };
+      State.save();
+      return buildState();
+    },
+
+    /* التصدير في الأوفلاين بينزّل الملف من المتصفح مباشرة */
+    "/api/export": () => {
+      const header = ["id", "date", "category", "amount", "description"];
+      const rows = State.expenses.map((expense) => [
+        expense.id,
+        expense.date,
+        expense.category,
+        expense.amount.toFixed(2),
+        `"${(expense.description || "").replace(/"/g, '""')}"`,
+      ]);
+      const csv = "\uFEFF" + [header, ...rows].map((row) => row.join(",")).join("\n");
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+      link.download = "expenses.csv";
+      link.click();
+      URL.revokeObjectURL(link.href);
+
+      return buildState();
+    },
+
+    "/api/stats": () => ({
+      month: State.month,
+      generated_at: new Date().toLocaleString("en-GB").slice(0, 17),
+      numpy: false,
+      offline: true,
+      forecast: forecast(),
+      anomalies: anomalyReport(),
+      rhythm: spendingRhythm(),
+      commitment: commitmentReport(),
+      clt: cltExperiment(),
+      charts: {},
+    }),
+
+    "/api/check": (payload) => {
+      const amounts = amountsOf(payload.category);
+      const pool = amounts.length >= 3 ? amounts : amountsOf();
+      if (pool.length < 3) throw new Error("سجّل 3 مصاريف على الأقل عشان نقدر نقيّم المبلغ.");
+
+      const stats = describe(pool);
+      const sigma = stats.std || 1e-9;
+      const amount = Number(payload.amount);
+      const z = round((amount - stats.mean) / sigma, 2);
+
+      return {
+        amount: round(amount),
+        z,
+        mean: round(stats.mean),
+        std: round(sigma),
+        percentile: round((pool.filter((value) => value <= amount).length / pool.length) * 100, 1),
+        verdict:
+          Math.abs(z) >= 3
+            ? "شاذ جداً بالنسبة لمصاريفك"
+            : Math.abs(z) >= 2
+            ? "مبلغ شاذ — بره المدى الطبيعي"
+            : Math.abs(z) >= 1
+            ? "أعلى من المعتاد شوية بس مقبول"
+            : "مبلغ طبيعي تماماً",
+      };
+    },
+
+  };
+
+  /* الواجهة اللي app.js بينادي عليها بدل fetch */
+  window.OfflineAPI = {
+    call(route, payload) {
+      const handler = ROUTES[route];
+      if (!handler) throw new Error(`المسار ${route} مش متاح في الوضع بدون سيرفر`);
+      return handler(payload || {});
+    },
+  };
+
+  /* شريط بيوضّح إن الصفحة شغالة من غير بايثون */
+  document.addEventListener("DOMContentLoaded", () => {
+    const banner = document.createElement("div");
+    banner.className = "offline-banner";
+    banner.innerHTML =
+      "<b>وضع بدون سيرفر</b> — الصفحة شغالة بالكامل جوه المتصفح والبيانات محفوظة على جهازك. " +
+      "لو عايز حفظ في ملفات JSON و CSV وتقارير الشهور، شغّل <code>python run_web.py</code>.";
+    document.querySelector(".shell").prepend(banner);
+  });
+})();
+
+</script>
+<script>
+/* ===== app.js ===== */
+/* =========================================================
+   app.js — بيكلّم الـ API بتاع بايثون ويرسم النتيجة
+   ========================================================= */
+
+const $ = (id) => document.getElementById(id);
+
+const money = (value) =>
+  Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
+
+/* ------------ نداء الـ API ------------ */
+async function callApi(route, payload) {
+  /* لو الصفحة مفتوحة بالدبل كليك (file://) مفيش سيرفر يرد،
+     فبننادي المحرك اللي في offline.js بدل fetch. */
+  if (window.IS_OFFLINE && window.OfflineAPI) {
+    return window.OfflineAPI.call(route, payload);
+  }
+
+  const options = payload
+    ? {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    : { method: "GET" };
+
+  const response = await fetch(route, options);
+  const result = await response.json();
+
+  if (!result.ok) {
+    throw new Error(result.error || "حصل خطأ غير متوقع");
+  }
+  return result.data;
+}
+
+function showMessage(element, text, isError) {
+  element.textContent = text;
+  element.className = "msg " + (isError ? "bad" : "ok");
+  if (!isError) {
+    setTimeout(() => {
+      element.textContent = "";
+    }, 4000);
+  }
+}
+
+/* ------------ الرسم ------------ */
+function renderHero(state) {
+  const ring = $("heroRing");
+  const value = $("heroIncome");
+  if (!ring || !value) return;
+
+  if (!state.income) {
+    value.textContent = "—";
+    return;
+  }
+
+  value.textContent = `${money(state.income)} ${state.currency}`;
+
+  // الحلقة بتتقسم بنسب الخطة الحقيقية
+  const shares = state.lines.map((line) => line.percent_of_income / 100);
+  const stops = [];
+  let cursor = 0;
+  const colors = ["var(--gold)", "#4b9fd6", "#3fb883"];
+
+  shares.forEach((share, index) => {
+    const next = cursor + share;
+    stops.push(`${colors[index]} ${cursor}turn ${next}turn`);
+    cursor = next;
+  });
+
+  ring.style.background = `conic-gradient(${stops.join(", ")})`;
+}
+
+function renderTiles(state) {
+  const tiles = $("tiles");
+  const empty = $("resultEmpty");
+  const foot = $("panelFoot");
+
+  if (!state.income) {
+    tiles.hidden = true;
+    foot.hidden = true;
+    empty.hidden = false;
+    $("panelMeta").textContent = "";
+    return;
+  }
+
+  empty.hidden = true;
+  tiles.hidden = false;
+  foot.hidden = false;
+
+  $("panelMeta").textContent = `شهر ${state.month} • دخل ${money(state.income)} ${state.currency} • ${state.mode}`;
+
+  tiles.innerHTML = state.lines
+    .map((line) => {
+      const percent = Math.min(line.ratio * 100, 100);
+      const statusClass = line.status === "over" ? "is-over" : line.status === "near" ? "is-near" : "is-ok";
+      return `
+        <article class="tile">
+          <div class="tile__top">
+            <span class="tile__name">${line.label}</span>
+            <span class="tile__share">${line.percent_of_income}٪</span>
+          </div>
+          <div class="tile__amount">${money(line.planned)} ${state.currency}</div>
+          <div class="track">
+            <div class="track__fill ${statusClass}" style="width:${percent}%"></div>
+          </div>
+          <div class="tile__meta">
+            <span>صرفت <strong>${money(line.spent)}</strong></span>
+            <span>${line.remaining >= 0 ? "باقي" : "زيادة"} <strong>${money(Math.abs(line.remaining))}</strong></span>
+          </div>
+        </article>`;
+    })
+    .join("");
+
+  $("statSpent").textContent = money(state.total_spent);
+  $("statSaved").textContent = money(state.actual_savings);
+  $("statStatus").textContent = state.on_plan ? "ملتزم ✔" : "خارج الخطة ✖";
+}
+
+function renderAlerts(state) {
+  $("alerts").innerHTML = state.warnings
+    .map((item) => `<div class="alert alert--${item.level}">${item.message}</div>`)
+    .join("");
+}
+
+function renderExpenses(state) {
+  const table = $("expenseTable");
+  $("expCount").textContent = state.expenses.length;
+
+  if (state.expenses.length === 0) {
+    table.innerHTML = '<p class="empty-line">لسه مفيش مصاريف. سجّل أول مصروف من جنب.</p>';
+    return;
+  }
+
+  table.innerHTML = state.expenses
+    .map(
+      (expense) => `
+      <div class="row">
+        <span class="tag tag--${expense.category}">${expense.label}</span>
+        <span class="row__desc">${expense.description || "—"}</span>
+        <span class="row__amount">${money(expense.amount)}</span>
+        <button class="row__edit" type="button" data-id="${expense.id}"
+                data-amount="${expense.amount}" data-desc="${expense.description}" title="تعديل">✎</button>
+        <button class="row__del" type="button" data-id="${expense.id}" title="حذف">✕</button>
+      </div>`
+    )
+    .join("");
+
+  table.querySelectorAll(".row__edit").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const newAmount = prompt("المبلغ الجديد:", button.dataset.amount);
+      if (newAmount === null) return;
+      const newDesc = prompt("الوصف الجديد:", button.dataset.desc);
+      if (newDesc === null) return;
+      try {
+        render(
+          await callApi("/api/expense/update", {
+            id: Number(button.dataset.id),
+            amount: Number(newAmount),
+            description: newDesc,
+          })
+        );
+        showMessage($("expenseMsg"), "اتعدّل المصروف.", false);
+      } catch (error) {
+        showMessage($("expenseMsg"), error.message, true);
+      }
+    });
+  });
+
+  table.querySelectorAll(".row__del").forEach((button) => {
+    button.addEventListener("click", async () => {
+      try {
+        render(await callApi("/api/expense/delete", { id: Number(button.dataset.id) }));
+      } catch (error) {
+        showMessage($("expenseMsg"), error.message, true);
+      }
+    });
+  });
+}
+
+function renderReport(state) {
+  const body = $("reportBody");
+
+  if (!state.income) {
+    body.innerHTML = '<p class="empty-line">التقرير هيظهر بعد ما تحدد الدخل وتسجل مصاريفك.</p>';
+    return;
+  }
+
+  const verdict = state.on_plan
+    ? '<div class="report__verdict good">✔ ملتزم بالخطة في كل التصنيفات</div>'
+    : '<div class="report__verdict bad">✖ خرجت عن الخطة في تصنيف أو أكتر</div>';
+
+  const rows = state.lines
+    .map(
+      (line) => `
+      <li>
+        <span>${line.label} — المفروض ${money(line.planned)}</span>
+        <strong>${money(line.spent)} (${Math.round(line.ratio * 100)}%)</strong>
+      </li>`
+    )
+    .join("");
+
+  const top = state.top_expenses
+    .map((item) => `<li><span>${item.description}</span><strong>${money(item.amount)}</strong></li>`)
+    .join("");
+
+  body.innerHTML = `
+    ${verdict}
+    <ul class="report__list">
+      ${rows}
+      <li><span>عدد المصاريف المسجلة</span><strong>${state.expenses_count}</strong></li>
+      <li><span>التوفير المخطط</span><strong>${money(state.planned_savings)}</strong></li>
+      <li><span>التوفير الفعلي</span><strong>${money(state.actual_savings)}</strong></li>
+      ${top ? '<li><span>أكبر المصاريف</span><strong></strong></li>' + top : ""}
+    </ul>`;
+}
+
+function render(state) {
+  renderHero(state);
+  renderTiles(state);
+  renderAlerts(state);
+  renderExpenses(state);
+  renderReport(state);
+
+  if (state.income && !$("incomeInput").value) {
+    $("incomeInput").value = state.income;
+  }
+  if (state.message) {
+    showMessage($("expenseMsg"), state.message, false);
+  }
+}
+
+/* ------------ الأحداث ------------ */
+function selectedMode() {
+  return document.querySelector('input[name="mode"]:checked').value;
+}
+
+function customSplit() {
+  return {
+    needs: Number($("cNeeds").value || 0),
+    wants: Number($("cWants").value || 0),
+    savings: Number($("cSavings").value || 0),
+  };
+}
+
+document.querySelectorAll('input[name="mode"]').forEach((radio) => {
+  radio.addEventListener("change", () => {
+    $("customBox").hidden = selectedMode() !== "custom";
+  });
+});
+
+["cNeeds", "cWants", "cSavings"].forEach((id) => {
+  $(id).addEventListener("input", () => {
+    const split = customSplit();
+    const total = split.needs + split.wants + split.savings;
+    const hint = $("customHint");
+    hint.textContent = `المجموع الحالي ${total}٪ — لازم يساوي 100٪`;
+    hint.className = "custom__hint" + (total === 100 ? "" : " bad");
+  });
+});
+
+$("calcBtn").addEventListener("click", async () => {
+  const mode = selectedMode();
+  try {
+    const state = await callApi("/api/income", {
+      income: Number($("incomeInput").value),
+      mode,
+      custom: mode === "custom" ? customSplit() : null,
+    });
+    render(state);
+    showMessage($("incomeMsg"), "اتحسبت الخطة، شوف النتيجة تحت.", false);
+  } catch (error) {
+    showMessage($("incomeMsg"), error.message, true);
+  }
+});
+
+$("resetBtn").addEventListener("click", async () => {
+  if (!confirm("هيتمسح دخل الشهر ده وكل مصاريفه. تكمل؟")) return;
+  try {
+    $("incomeInput").value = "";
+    render(await callApi("/api/reset", {}));
+    showMessage($("incomeMsg"), "اتعمل إعادة تعيين للشهر.", false);
+  } catch (error) {
+    showMessage($("incomeMsg"), error.message, true);
+  }
+});
+
+$("addExpenseBtn").addEventListener("click", async () => {
+  try {
+    const state = await callApi("/api/expense", {
+      amount: Number($("expAmount").value),
+      category: $("expCategory").value,
+      description: $("expDesc").value,
+    });
+    $("expAmount").value = "";
+    $("expDesc").value = "";
+    render(state);
+    showMessage($("expenseMsg"), "اتسجل المصروف.", false);
+  } catch (error) {
+    showMessage($("expenseMsg"), error.message, true);
+  }
+});
+
+$("exportBtn").addEventListener("click", async () => {
+  try {
+    render(await callApi("/api/export", {}));
+  } catch (error) {
+    showMessage($("expenseMsg"), error.message, true);
+  }
+});
+
+
+/* =========================================================
+   التحليل الإحصائي — بينادي /api/stats ويرسم النتيجة
+   ========================================================= */
+
+const CHART_TITLES = {
+  distribution: "توزيع مصاريفك مقابل المنحنى الطبيعي",
+  forecast: "محاكاة مونت كارلو لإجمالي الشهر",
+  category_risk: "احتمال تجاوز كل تصنيف لخطته",
+  poisson: "عدد عمليات الصرف اليومية مقابل بواسون",
+  clt: "نظرية النهاية المركزية على مصاريفك",
+  standard_error: "الخطأ المعياري وحجم العيّنة",
+};
+
+function statsCard(title, badge, rows, tone) {
+  const items = rows
+    .filter(Boolean)
+    .map((row) =>
+      Array.isArray(row)
+        ? `<li><span>${row[0]}</span><strong>${row[1]}</strong></li>`
+        : `<li class="wide">${row}</li>`
+    )
+    .join("");
+
+  return `
+    <article class="scard ${tone ? "scard--" + tone : ""}">
+      <div class="scard__head">
+        <h3>${title}</h3>
+        ${badge ? `<span class="scard__badge">${badge}</span>` : ""}
+      </div>
+      <ul class="scard__list">${items}</ul>
+    </article>`;
+}
+
+function unavailableCard(title, text) {
+  return `
+    <article class="scard scard--muted">
+      <div class="scard__head"><h3>${title}</h3></div>
+      <p class="scard__empty">${text}</p>
+    </article>`;
+}
+
+function renderForecastCard(data, currency) {
+  if (data.unavailable) return unavailableCard("توقّع آخر الشهر", data.unavailable);
+
+  const risk = data.risk_over_income;
+  const tone = risk < 30 ? "ok" : risk < 60 ? "warn" : "bad";
+  const categories = data.categories
+    .map((row) => `${row.label} <b>${row.risk}٪</b>`)
+    .join(" · ");
+
+  return statsCard(
+    "توقّع آخر الشهر",
+    `${data.simulations.toLocaleString("en-US")} محاكاة`,
+    [
+      ["المتوقع تخلّص الشهر على", `${money(data.expected_total)} ${currency}`],
+      ["نطاق 90٪", `${money(data.p05)} — ${money(data.p95)}`],
+      ["احتمال تعدّي دخلك", `${risk}٪`],
+      ["متوسط الصرف اليومي", `${money(data.daily_mean)} ± ${money(data.daily_std)}`],
+      ["فاضل من الشهر", `${data.days_remaining} يوم`],
+      `تقريب CLT بيدّي ${money(data.clt_mean)} ± ${money(data.clt_std)} (${data.clt_risk}٪) — قريب جداً من المحاكاة.`,
+      `احتمال تجاوز الخطة: ${categories}`,
+    ],
+    tone
+  );
+}
+
+function renderAnomalyCard(data, currency) {
+  if (data.unavailable) return unavailableCard("المصاريف الشاذة", data.unavailable);
+
+  const observed = data.empirical_rule.observed;
+  const flagged = data.flagged.length
+    ? data.flagged
+        .slice(0, 4)
+        .map((item) => `<span class="flag">${item.message} <b>Z = ${item.z}</b></span>`)
+        .join("")
+    : '<span class="flag flag--ok">مفيش أي مصروف شاذ — كله جوه المدى الطبيعي ✔</span>';
+
+  return statsCard(
+    "المصاريف الشاذة (Z-Score)",
+    `${data.flagged.length} مصروف`,
+    [
+      ["متوسط المصروف", `${money(data.stats.mean)} ± ${money(data.stats.std)}`],
+      ["المدى الطبيعي ±2σ", `${money(data.normal_range.low)} — ${money(data.normal_range.high)}`],
+      [
+        "القاعدة التجريبية (المتوقع 68/95/99.7)",
+        `${observed["1σ"]}٪ / ${observed["2σ"]}٪ / ${observed["3σ"]}٪`,
+      ],
+      `<div class="flags">${flagged}</div>`,
+    ],
+    data.flagged.length ? "warn" : "ok"
+  );
+}
+
+function renderRhythmCard(data) {
+  if (data.unavailable) return unavailableCard("إيقاع الصرف", data.unavailable);
+
+  return statsCard(
+    "إيقاع الصرف (Poisson + Exponential)",
+    `λ = ${data.lambda}`,
+    [
+      ["متوسط عمليات الصرف في اليوم", data.lambda],
+      ["احتمال يوم من غير صرف", `${data.no_spend_day}٪`],
+      ["متوسط المدة بين صرفتين", `${data.mean_gap_days} يوم`],
+      ["احتمال تصرف خلال 24 ساعة", `${data.within_1_day}٪`],
+      ["احتمال تصرف خلال 3 أيام", `${data.within_3_days}٪`],
+    ]
+  );
+}
+
+function renderCommitmentCard(data) {
+  if (data.unavailable) return unavailableCard("التزامك بالخطة", data.unavailable);
+
+  return statsCard(
+    "التزامك بالخطة (Binomial + Beta)",
+    `${data.successes} / ${data.trials} شهر`,
+    [
+      ["معدل الالتزام المرصود", `${data.p_hat}٪`],
+      ["تقدير Beta", `${data.beta_estimate}٪`],
+      ["فترة ثقة 90٪", `${data.credible_interval[0]}٪ — ${data.credible_interval[1]}٪`],
+      [`احتمال الالتزام في شهرين+ من ${data.horizon}`, `${data.at_least_two}٪`],
+      data.expected_months_until_slip
+        ? ["متوسط الشهور لحد أول خروج عن الخطة", `${data.expected_months_until_slip} شهر`]
+        : null,
+    ]
+  );
+}
+
+function renderCltCard(data) {
+  if (data.unavailable) return unavailableCard("نظرية النهاية المركزية", data.unavailable);
+
+  const rows = data.experiments
+    .map(
+      (item) =>
+        `<tr><td>${item.n}</td><td>${money(item.mean_of_means)}</td>` +
+        `<td>${money(item.observed_se)}</td><td>${money(item.theoretical_se)}</td></tr>`
+    )
+    .join("");
+
+  return statsCard(
+    "نظرية النهاية المركزية",
+    `μ = ${money(data.population.mean)}`,
+    [
+      `<table class="mini-table">
+         <thead><tr><th>n</th><th>متوسط المتوسطات</th><th>SE فعلي</th><th>SE نظري</th></tr></thead>
+         <tbody>${rows}</tbody>
+       </table>`,
+      "كل ما حجم العيّنة كبر، توزيع المتوسطات قرب من الطبيعي وضاق — والخطأ المعياري نزل بـ σ/√n.",
+    ]
+  );
+}
+
+function renderStats(stats, currency) {
+  const grid = $("statsGrid");
+  grid.hidden = false;
+  grid.innerHTML = [
+    renderForecastCard(stats.forecast || {}, currency),
+    renderAnomalyCard(stats.anomalies || {}, currency),
+    renderRhythmCard(stats.rhythm || {}),
+    renderCommitmentCard(stats.commitment || {}),
+    renderCltCard(stats.clt || {}),
+  ].join("");
+
+  /* الشارة لازم تقول الحقيقة: في وضع الملف الحسابات بتتعمل في المتصفح */
+  $("statsEngine").textContent = stats.offline
+    ? "المتصفح"
+    : stats.numpy
+    ? "NumPy"
+    : "Python core";
+
+  const charts = $("charts");
+  const entries = Object.entries(stats.charts || {});
+
+  if (entries.length === 0) {
+    charts.hidden = true;
+    return;
+  }
+
+  const stamp = Date.now();   // عشان المتصفح ميعرضش نسخة قديمة من الصورة
+  charts.hidden = false;
+  charts.innerHTML = entries
+    .map(
+      ([key, file]) => `
+      <figure class="chart">
+        <img src="/charts/${file}?v=${stamp}" alt="${CHART_TITLES[key] || key}" loading="lazy" />
+        <figcaption>${CHART_TITLES[key] || key}</figcaption>
+      </figure>`
+    )
+    .join("");
+}
+
+$("statsBtn").addEventListener("click", async () => {
+  const button = $("statsBtn");
+  const hint = $("statsHint");
+
+  button.disabled = true;
+  hint.textContent = "بيحسب 10,000 محاكاة ويرسم…";
+
+  try {
+    const stats = await callApi("/api/stats", { charts: true });
+    renderStats(stats, "جنيه");
+    hint.textContent = `آخر تحديث ${stats.generated_at}`;
+  } catch (error) {
+    hint.textContent = error.message;
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$("checkBtn").addEventListener("click", async () => {
+  try {
+    const result = await callApi("/api/check", {
+      amount: Number($("checkAmount").value),
+      category: $("checkCategory").value,
+    });
+    const isOdd = Math.abs(result.z) >= 2;
+    showMessage(
+      $("checkMsg"),
+      `Z = ${result.z} — ${result.verdict}. متوسطك ${money(result.mean)} ± ${money(result.std)}،` +
+        ` والمبلغ ده أكبر من ${result.percentile}٪ من مصاريفك.`,
+      isOdd
+    );
+  } catch (error) {
+    showMessage($("checkMsg"), error.message, true);
+  }
+});
+
+/* ------------ أول تحميل ------------ */
+(async function init() {
+  try {
+    render(await callApi("/api/state"));
+  } catch (error) {
+    console.error(error);
+  }
+})();
+
+
+/* =========================================================
+   التحليل الإحصائي الشامل — 12 مرحلة  (/api/analysis)
+   ========================================================= */
+
+const PIPE = { data: null, active: "phase1", rows: null };
+
+const fixed = (value, digits = 0) =>
+  Number(value || 0).toLocaleString("en-US", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+
+/* p-value الصغيرة أوي بتتكتب كده بدل 0.0 */
+const showP = (value) => (value < 0.0001 ? "< 0.0001" : Number(value).toFixed(4));
+
+/* ---------- عناصر بناء بسيطة ---------- */
+const statRow = (label, value) =>
+  `<div class="prow"><span>${label}</span><b>${value}</b></div>`;
+
+const note = (text) => `<p class="pnote">${text}</p>`;
+
+/* الجدول بيتلف في حاوية بتتزحلق أفقياً لوحدها — من غير كده الجداول
+   العريضة (زي مصفوفة الشهور) بتمدّ الصفحة كلها على الموبايل. */
+const table = (headers, rows) => `
+  <div class="ptable-wrap">
+    <table class="ptable">
+      <thead><tr>${headers.map((head) => `<th>${head}</th>`).join("")}</tr></thead>
+      <tbody>${rows
+        .map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`)
+        .join("")}</tbody>
+    </table>
+  </div>`;
+
+/* ---------- رسومات SVG ---------- */
+function barChart(labels, values) {
+  const W = 320, H = 150, PAD = 26, BASE = H - 22;
+  const peak = Math.max(...values) || 1;
+  const width = (W - PAD * 2) / values.length - 10;
+
+  const bars = values
+    .map((value, index) => {
+      const x = PAD + index * ((W - PAD * 2) / values.length) + 5;
+      const height = (value / peak) * (BASE - 16);
+      return `
+        <rect x="${x}" y="${BASE - height}" width="${width}" height="${height}"
+              rx="3" fill="url(#gGold)" />
+        <text x="${x + width / 2}" y="${BASE - height - 5}" font-size="9"
+              fill="var(--gold-soft)" text-anchor="middle">${fixed(value)}</text>
+        <text x="${x + width / 2}" y="${H - 6}" font-size="9"
+              fill="var(--muted)" text-anchor="middle">${labels[index]}</text>`;
+    })
+    .join("");
+
+  return svgWrap(W, H, bars);
+}
+
+function histogramChart(bins) {
+  const W = 320, H = 150, PAD = 12, BASE = H - 24;
+  const peak = Math.max(...bins.map((bin) => bin.count)) || 1;
+  const width = (W - PAD * 2) / bins.length - 2;
+
+  const bars = bins
+    .map((bin, index) => {
+      const x = PAD + index * ((W - PAD * 2) / bins.length);
+      const height = (bin.count / peak) * (BASE - 10);
+      return `<rect x="${x}" y="${BASE - height}" width="${width}" height="${height}"
+                    rx="2" fill="url(#gGold)"><title>${bin.label}: ${bin.count}</title></rect>`;
+    })
+    .join("");
+
+  const labels =
+    `<text x="${PAD}" y="${H - 8}" font-size="9" fill="var(--muted)" text-anchor="start">${fixed(bins[0].start)}</text>` +
+    `<text x="${W - PAD}" y="${H - 8}" font-size="9" fill="var(--muted)" text-anchor="end">${fixed(bins[bins.length - 1].end)}</text>`;
+
+  return svgWrap(W, H, bars + labels);
+}
+
+function boxPlot(box, outliers) {
+  const W = 320, H = 110, PAD = 18;
+  const all = [box.min, box.max, ...(outliers || [])];
+  const low = Math.min(...all);
+  const high = Math.max(...all) || 1;
+  const scale = (value) => PAD + ((value - low) / (high - low || 1)) * (W - PAD * 2);
+  const mid = 46;
+
+  const dots = (outliers || [])
+    .map((value) => `<circle cx="${scale(value)}" cy="${mid}" r="3"
+                       fill="none" stroke="var(--over)" stroke-width="1.5" />`)
+    .join("");
+
+  /* لما الشواذ بعيدة أوي، الصندوق بيبقى ضيق والأرقام بتتداخل فوق بعض.
+     في الحالة دي بنكتب الملخص سطر واحد تحت الرسمة بدل 3 أرقام متلزقين. */
+  const boxWidth = scale(box.q3) - scale(box.q1);
+  const labels =
+    boxWidth >= 70
+      ? `<text x="${scale(box.q1)}" y="${mid + 34}" font-size="9" fill="var(--muted)" text-anchor="middle">Q1 ${fixed(box.q1)}</text>
+         <text x="${scale(box.median)}" y="${mid - 24}" font-size="9" fill="var(--gold-soft)" text-anchor="middle">وسيط ${fixed(box.median)}</text>
+         <text x="${scale(box.q3)}" y="${mid + 34}" font-size="9" fill="var(--muted)" text-anchor="middle">Q3 ${fixed(box.q3)}</text>`
+      : `<text x="${W / 2}" y="${H - 6}" font-size="9" fill="var(--muted)" text-anchor="middle">Q1 ${fixed(box.q1)}  ·  وسيط ${fixed(box.median)}  ·  Q3 ${fixed(box.q3)}</text>`;
+
+  return svgWrap(
+    W,
+    H,
+    `<line x1="${scale(box.min)}" y1="${mid}" x2="${scale(box.q1)}" y2="${mid}"
+           stroke="var(--muted)" stroke-dasharray="3 3" />
+     <line x1="${scale(box.q3)}" y1="${mid}" x2="${scale(box.max)}" y2="${mid}"
+           stroke="var(--muted)" stroke-dasharray="3 3" />
+     <line x1="${scale(box.min)}" y1="${mid - 9}" x2="${scale(box.min)}" y2="${mid + 9}" stroke="var(--muted)" />
+     <line x1="${scale(box.max)}" y1="${mid - 9}" x2="${scale(box.max)}" y2="${mid + 9}" stroke="var(--muted)" />
+     <rect x="${scale(box.q1)}" y="${mid - 17}" width="${Math.max(scale(box.q3) - scale(box.q1), 2)}"
+           height="34" rx="4" fill="rgba(224,165,74,0.22)" stroke="var(--gold)" />
+     <line x1="${scale(box.median)}" y1="${mid - 17}" x2="${scale(box.median)}" y2="${mid + 17}"
+           stroke="var(--gold-soft)" stroke-width="2.5" />
+     ${dots}
+     ${labels}`
+  );
+}
+
+function scatterChart(points) {
+  const W = 320, H = 150, PAD = 22, BASE = H - 20;
+  const xs = points.map((point) => point.x);
+  const ys = points.map((point) => point.y);
+  const maxX = Math.max(...xs) || 1;
+  const maxY = Math.max(...ys) || 1;
+
+  const dots = points
+    .map(
+      (point) =>
+        `<circle cx="${PAD + (point.x / maxX) * (W - PAD * 2)}"
+                 cy="${BASE - (point.y / maxY) * (BASE - 12)}" r="2.6"
+                 fill="var(--gold)" fill-opacity="0.75" />`
+    )
+    .join("");
+
+  return svgWrap(
+    W,
+    H,
+    `<line x1="${PAD}" y1="${BASE}" x2="${W - PAD}" y2="${BASE}" stroke="rgba(255,255,255,0.16)" />
+     ${dots}
+     <text x="${PAD}" y="${H - 5}" font-size="9" fill="var(--muted)">اليوم 1</text>
+     <text x="${W - PAD}" y="${H - 5}" font-size="9" fill="var(--muted)" text-anchor="end">اليوم ${maxX}</text>`
+  );
+}
+
+function lineChart(points) {
+  const W = 320, H = 150, PAD = 22, BASE = H - 20;
+  if (!points.length) return "";
+
+  const maxX = Math.max(...points.map((point) => point.t)) || 1;
+  const maxY = Math.max(...points.map((point) => point.s)) || 1;
+  const sx = (t) => PAD + (t / maxX) * (W - PAD * 2);
+  const sy = (s) => BASE - (s / maxY) * (BASE - 12);
+
+  const path = points
+    .map((point, index) => `${index ? "L" : "M"}${sx(point.t).toFixed(1)},${sy(point.s).toFixed(1)}`)
+    .join(" ");
+
+  return svgWrap(
+    W,
+    H,
+    `<path d="${path} L${sx(maxX)},${BASE} L${sx(points[0].t)},${BASE} Z" fill="url(#gArea)" />
+     <path d="${path}" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linejoin="round" />
+     <text x="${W - PAD}" y="18" font-size="9" fill="var(--gold-soft)" text-anchor="end">${fixed(maxY)}</text>`
+  );
+}
+
+function svgWrap(width, height, body) {
+  return `
+    <svg class="pchart" viewBox="0 0 ${width} ${height}" role="img">
+      <defs>
+        <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f2ca8a" /><stop offset="100%" stop-color="#b9822c" />
+        </linearGradient>
+        <linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(224,165,74,0.4)" />
+          <stop offset="100%" stop-color="rgba(224,165,74,0.02)" />
+        </linearGradient>
+      </defs>
+      ${body}
+    </svg>`;
+}
+
+/* ---------- عرض كل مرحلة ---------- */
+const PHASE_VIEWS = {
+  phase1(data) {
+    const dropped = data.dropped_detail;
+    return (
+      statRow("صفوف خام", fixed(data.raw_rows)) +
+      statRow("صفوف نضيفة", fixed(data.clean_rows)) +
+      statRow("اتشال", `${fixed(data.dropped_total)} صف`) +
+      table(
+        ["سبب الاستبعاد", "عدد"],
+        [
+          ["قيم ناقصة", dropped.missing],
+          ["مبلغ غير صحيح", dropped.invalid_amount],
+          ["تصنيف مجهول", dropped.unknown_category],
+          ["صف مكرر", dropped.duplicate],
+        ]
+      ) +
+      `<h4 class="phead">المتغيرات</h4>` +
+      table(
+        ["المتغيّر", "النوع"],
+        [
+          ...data.variables.numerical.map((item) => [item.label, `رقمي — ${item.type}`]),
+          ...data.variables.categorical.map((item) => [
+            item.label,
+            `فئوي — ${item.levels.length} مستويات`,
+          ]),
+        ]
+      ) +
+      note(data.interpretation)
+    );
+  },
+
+  phase2(data) {
+    return (
+      `<div class="pgrid">
+        ${statRow("المتوسط", fixed(data.mean))}
+        ${statRow("الوسيط", fixed(data.median))}
+        ${statRow("المنوال", `${fixed(data.mode.value)} (${data.mode.range})`)}
+        ${statRow("المدى", fixed(data.range))}
+        ${statRow("التباين", fixed(data.variance))}
+        ${statRow("الانحراف المعياري", fixed(data.std))}
+        ${statRow("Q1", fixed(data.q1))}
+        ${statRow("Q3", fixed(data.q3))}
+        ${statRow("المدى الربيعي IQR", fixed(data.iqr))}
+        ${statRow("معامل الاختلاف", `${data.cv}٪`)}
+      </div>` +
+      `<h4 class="phead">حسب التصنيف</h4>` +
+      table(
+        ["التصنيف", "عدد", "متوسط", "وسيط", "انحراف", "إجمالي"],
+        data.per_category.map((row) => [
+          row.label,
+          row.n,
+          fixed(row.mean),
+          fixed(row.median),
+          fixed(row.std),
+          fixed(row.total),
+        ])
+      ) +
+      note(data.interpretation)
+    );
+  },
+
+  phase3(data) {
+    return (
+      `<h4 class="phead">التوزيع التكراري</h4>` +
+      histogramChart(data.frequency) +
+      table(
+        ["الفئة", "تكرار", "٪", "تراكمي ٪"],
+        data.frequency
+          .filter((bin) => bin.count > 0)
+          .map((bin) => [bin.label, bin.count, bin.percent, bin.cumulative_percent])
+      ) +
+      `<h4 class="phead">البوكس بلوت</h4>` +
+      boxPlot(data.box_plot, data.outliers.map((item) => item.amount)) +
+      `<div class="pgrid">
+        ${statRow("أقل قيمة (بدون شواذ)", fixed(data.box_plot.min))}
+        ${statRow("Q1", fixed(data.box_plot.q1))}
+        ${statRow("الوسيط", fixed(data.box_plot.median))}
+        ${statRow("Q3", fixed(data.box_plot.q3))}
+        ${statRow("أكبر قيمة (بدون شواذ)", fixed(data.box_plot.max))}
+        ${statRow("الحد الأدنى للشذوذ", fixed(data.box_plot.lower_fence))}
+        ${statRow("الحد الأعلى للشذوذ", fixed(data.box_plot.upper_fence))}
+        ${statRow("عدد الشواذ", data.outliers_count)}
+        ${statRow("الالتواء", data.shape.skewness)}
+        ${statRow("التفلطح", data.shape.kurtosis)}
+        ${statRow("شكل التوزيع", data.shape.label)}
+      </div>` +
+      (data.outliers.length
+        ? table(
+            ["المبلغ", "التاريخ", "التصنيف", "الوصف"],
+            data.outliers.map((item) => [
+              fixed(item.amount),
+              item.day,
+              item.label,
+              item.description || "—",
+            ])
+          )
+        : "") +
+      note(data.interpretation)
+    );
+  },
+
+  phase4(data) {
+    const matrix = data.matrix;
+    return (
+      `<h4 class="phead">متجه الإنفاق والضرب النقطي</h4>` +
+      table(
+        ["", ...data.labels],
+        [
+          ["متجه الإنفاق", ...data.spend_vector.map((value) => fixed(value))],
+          ["متجه الأوزان", ...data.weight_vector],
+          ["× 1.10 (ضرب قياسي)", ...data.scaled_vector.map((value) => fixed(value))],
+        ]
+      ) +
+      `<div class="pgrid">
+        ${statRow("حاصل الضرب النقطي", fixed(data.dot_product))}
+        ${statRow("طول المتجه ‖v‖", fixed(data.magnitude))}
+        ${statRow("تكلفة زيادة 10٪", fixed(data.extra_cost))}
+        ${statRow("جيب تمام الزاوية", data.alignment.cosine)}
+        ${statRow("الزاوية عن الخطة", `${data.alignment.angle_degrees}°`)}
+      </div>` +
+      `<h4 class="phead">المصفوفة (${matrix.shape}) — شهور × تصنيفات</h4>` +
+      table(
+        ["الشهر", ...matrix.columns, "إجمالي"],
+        matrix.values.map((row, index) => [
+          matrix.rows[index],
+          ...row.map((value) => fixed(value)),
+          `<b>${fixed(matrix.row_totals[index])}</b>`,
+        ])
+      ) +
+      note(data.interpretation)
+    );
+  },
+
+  phase5(data) {
+    return (
+      `<h4 class="phead">احتمالات بسيطة</h4>` +
+      table(
+        ["الحدث", "الرمز", "الحساب", "الاحتمال"],
+        data.simple.map((item) => [
+          item.event,
+          item.notation,
+          `${item.count} / ${item.of}`,
+          `${item.percent}٪`,
+        ])
+      ) +
+      `<h4 class="phead">احتمالات شرطية</h4>` +
+      table(
+        ["الحدث", "الرمز", "الحساب", "الاحتمال"],
+        data.conditional.map((item) => [
+          item.event,
+          item.notation,
+          `${item.count} / ${item.of}`,
+          `${item.percent}٪`,
+        ])
+      ) +
+      statRow(
+        "هل الحدثين مستقلين؟",
+        data.independence.independent ? "تقريباً مستقلين" : "لأ — مرتبطين"
+      ) +
+      `<h4 class="phead">القيمة المتوقعة E(X)</h4>` +
+      table(
+        ["التصنيف", "P(X)", "متوسط", "المساهمة"],
+        data.expected_value.table.map((row) => [
+          row.label,
+          row.probability,
+          fixed(row.mean),
+          fixed(row.contribution),
+        ])
+      ) +
+      statRow("E(X) للمصروف الواحد", fixed(data.expected_value.per_expense)) +
+      statRow("E(X) لليوم", fixed(data.expected_value.per_day)) +
+      note(data.interpretation)
+    );
+  },
+
+  phase6(data) {
+    return (
+      table(
+        ["", "المجتمع", "العيّنة"],
+        [
+          ["الحجم n", data.population.n, data.sample.n],
+          ["المتوسط", fixed(data.population.mean), fixed(data.sample.mean)],
+          ["الانحراف", fixed(data.population.std), fixed(data.sample.std)],
+        ]
+      ) +
+      `<div class="pgrid">
+        ${statRow("الخطأ المعياري SE", fixed(data.sample.standard_error, 2))}
+        ${statRow("نسبة العيّنة", `${data.sample.fraction}٪`)}
+        ${statRow("فرق التقدير", fixed(data.comparison.error, 2))}
+        ${statRow("نسبة الخطأ", `${data.comparison.error_percent}٪`)}
+        ${statRow("SE فعلي (400 عيّنة)", fixed(data.sampling_distribution.observed_se, 2))}
+        ${statRow("SE نظري σ/√n", fixed(data.sampling_distribution.theoretical_se, 2))}
+      </div>` +
+      note(data.interpretation)
+    );
+  },
+
+  phase7(data) {
+    const main = data.expense_mean;
+    return (
+      `<div class="ci">
+        <div class="ci__bar">
+          <span>${fixed(main.low)}</span>
+          <div class="ci__track"><i></i><b>${fixed(main.mean)}</b></div>
+          <span>${fixed(main.high)}</span>
+        </div>
+      </div>` +
+      `<div class="pgrid">
+        ${statRow("مستوى الثقة", `${main.confidence}٪`)}
+        ${statRow("المتوسط", fixed(main.mean))}
+        ${statRow("الخطأ المعياري", fixed(main.standard_error, 2))}
+        ${statRow("t الحرجة", main.t_critical)}
+        ${statRow("هامش الخطأ", `± ${fixed(main.margin)}`)}
+        ${statRow("الفترة اليومية", `${fixed(data.daily_mean.low)} — ${fixed(data.daily_mean.high)}`)}
+      </div>` +
+      (data.per_category.length
+        ? `<h4 class="phead">فترات الثقة حسب التصنيف</h4>` +
+          table(
+            ["التصنيف", "n", "المتوسط", "الفترة 95٪"],
+            data.per_category.map((row) => [
+              row.label,
+              row.n,
+              fixed(row.mean),
+              `${fixed(row.low)} — ${fixed(row.high)}`,
+            ])
+          )
+        : "") +
+      note(data.interpretation)
+    );
+  },
+
+  phase8(data) {
+    return (
+      `<div class="hyp">
+        <p class="hyp__h">${data.h0}</p>
+        <p class="hyp__h">${data.h1}</p>
+      </div>` +
+      `<div class="pgrid">
+        ${statRow("الاختبار", data.test)}
+        ${statRow("مستوى الدلالة α", data.alpha)}
+        ${statRow("حجم العيّنة n", data.n)}
+        ${statRow("متوسط العيّنة", fixed(data.sample_mean))}
+        ${statRow("القيمة المرجعية μ₀", fixed(data.reference))}
+        ${statRow("الخطأ المعياري", fixed(data.standard_error, 2))}
+        ${statRow("إحصائية الاختبار t", data.t_statistic)}
+        ${statRow("درجات الحرية df", data.df)}
+        ${statRow("t الحرجة", `± ${data.t_critical}`)}
+        ${statRow("p-value", showP(data.p_value))}
+      </div>` +
+      `<p class="verdict ${data.reject_null ? "verdict--reject" : "verdict--keep"}">${data.decision}</p>` +
+      note(data.conclusion)
+    );
+  },
+
+  phase9(data) {
+    if (data.unavailable) return note(data.unavailable);
+    return (
+      `<div class="hyp">
+        <p class="hyp__h">${data.h0}</p>
+        <p class="hyp__h">${data.h1}</p>
+      </div>` +
+      table(
+        ["المجموعة", "n", "المتوسط", "الانحراف"],
+        data.groups.map((row) => [row.name, row.n, fixed(row.mean), fixed(row.std)])
+      ) +
+      `<h4 class="phead">جدول تحليل التباين</h4>` +
+      table(
+        ["المصدر", "SS", "df", "MS"],
+        [
+          ["بين المجموعات", fixed(data.table.between.ss), data.table.between.df, fixed(data.table.between.ms)],
+          ["داخل المجموعات", fixed(data.table.within.ss), data.table.within.df, fixed(data.table.within.ms)],
+        ]
+      ) +
+      `<div class="pgrid">
+        ${statRow("المتوسط العام", fixed(data.grand_mean))}
+        ${statRow("إحصائية F", data.f_statistic)}
+        ${statRow("p-value", showP(data.p_value))}
+        ${statRow("α", data.alpha)}
+      </div>` +
+      `<p class="verdict ${data.reject_null ? "verdict--reject" : "verdict--keep"}">${data.decision}</p>` +
+      note(data.conclusion)
+    );
+  },
+
+  phase10(data) {
+    if (data.unavailable) return note(data.unavailable);
+    return (
+      lineChart(data.points) +
+      `<div class="pgrid">
+        ${statRow("الشهر المدروس", data.month)}
+        ${statRow("عدد الأيام", data.days)}
+        ${statRow("الدالة الخطية", data.linear.equation)}
+        ${statRow("المشتقة", data.linear.derivative)}
+        ${statRow("R²", data.linear.r_squared)}
+        ${statRow("الدالة التربيعية", data.quadratic.equation)}
+        ${statRow("مشتقتها", data.quadratic.derivative)}
+        ${statRow("المشتقة الثانية", data.quadratic.second_derivative)}
+        ${statRow("معدل أول الشهر", `${fixed(data.rates.at_start)} / يوم`)}
+        ${statRow("معدل آخر الشهر", `${fixed(data.rates.at_end)} / يوم`)}
+        ${statRow("الاتجاه", data.trend)}
+        ${data.reach_income_day ? statRow("متوقع تستهلك دخلك يوم", data.reach_income_day) : ""}
+      </div>` +
+      note(data.interpretation)
+    );
+  },
+
+  phase11(data) {
+    return (
+      `<div class="pviz">
+        <div class="pviz__item">
+          <h4 class="phead">${data.bar.title}</h4>
+          ${barChart(data.bar.labels, data.bar.values)}
+          <p class="pwhy">${data.bar.why}</p>
+        </div>
+        <div class="pviz__item">
+          <h4 class="phead">${data.histogram.title}</h4>
+          ${histogramChart(data.histogram.bins)}
+          <p class="pwhy">${data.histogram.why}</p>
+        </div>
+        <div class="pviz__item">
+          <h4 class="phead">${data.box.title}</h4>
+          ${boxPlot(data.box.data, data.box.outliers)}
+          <p class="pwhy">${data.box.why}</p>
+        </div>
+        <div class="pviz__item">
+          <h4 class="phead">${data.scatter.title}</h4>
+          ${scatterChart(data.scatter.points)}
+          <p class="pwhy">${data.scatter.why}</p>
+        </div>
+        <div class="pviz__item">
+          <h4 class="phead">${data.line.title}</h4>
+          ${lineChart(data.line.points)}
+          <p class="pwhy">${data.line.why}</p>
+        </div>
+      </div>` + note(data.interpretation)
+    );
+  },
+
+  phase12(data) {
+    return (
+      `<h4 class="phead">أهم النتائج</h4>
+       <ul class="plist">${data.findings.map((item) => `<li>${item}</li>`).join("")}</ul>` +
+      `<h4 class="phead">النتائج الإحصائية</h4>` +
+      table(
+        ["الاختبار", "النتيجة", "القرار"],
+        data.statistical_results.map((row) => [row.name, row.result, row.decision])
+      ) +
+      `<h4 class="phead">العلاقات المهمة</h4>
+       <ul class="plist">${data.relationships.map((item) => `<li>${item}</li>`).join("")}</ul>` +
+      `<h4 class="phead">الخلاصة</h4>${note(data.conclusion)}` +
+      `<h4 class="phead">تطويرات مستقبلية</h4>
+       <ul class="plist">${data.improvements.map((item) => `<li>${item}</li>`).join("")}</ul>`
+    );
+  },
+};
+
+
+/* بيعلّم الجداول اللي أعرض من الشاشة عشان تظهر ملاحظة «اسحب».
+   بنقيس بعد الرسم مش قبله — عشان منقولش للمستخدم اسحب وهو شايف كله. */
+function markScrollableTables() {
+  document.querySelectorAll(".ptable-wrap").forEach((wrap) => {
+    wrap.classList.toggle("is-scrollable", wrap.scrollWidth > wrap.clientWidth + 2);
+  });
+}
+
+function renderPhase(key) {
+  PIPE.active = key;
+  const data = PIPE.data[key];
+  const panel = $("pipePanel");
+
+  $("pipeNav")
+    .querySelectorAll("button")
+    .forEach((button) => button.classList.toggle("on", button.dataset.phase === key));
+
+  if (!data || data.error) {
+    panel.innerHTML = note(data ? data.error : "المرحلة دي مفيهاش نتائج.");
+    return;
+  }
+
+  panel.innerHTML =
+    `<h3 class="ptitle">${PIPE.data.titles[key]}</h3>` + PHASE_VIEWS[key](data);
+
+  markScrollableTables();
+}
+
+$("pipeBtn") &&
+  $("pipeBtn").addEventListener("click", async () => {
+    const button = $("pipeBtn");
+    const hint = $("pipeHint");
+    button.disabled = true;
+    hint.textContent = "بيشغّل الـ 12 مرحلة…";
+
+    try {
+      const data = await callApi("/api/analysis", {
+        source: PIPE.rows ? "upload" : $("pipeSource").value,
+        rows: PIPE.rows || null,
+      });
+      PIPE.data = data;
+
+      $("pipeNav").innerHTML = Object.keys(data.titles)
+        .map(
+          (key) =>
+            `<button type="button" data-phase="${key}" class="${key === "phase1" ? "on" : ""}">${data.titles[key]}</button>`
+        )
+        .join("");
+
+      $("pipeBody").hidden = false;
+      $("pipeRows").textContent = `${fixed(data.rows)} صف`;
+      hint.textContent = `اتحلّل ${fixed(data.rows)} صف`;
+      renderPhase("phase1");
+    } catch (error) {
+      hint.textContent = error.message;
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+$("pipeNav") &&
+  $("pipeNav").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-phase]");
+    if (button) renderPhase(button.dataset.phase);
+  });
+
+/* رفع ملف CSV: بيتقرا في المتصفح وبيتبعت كصفوف — بيشتغل في الوضعين */
+$("pipeFile") &&
+  $("pipeFile").addEventListener("change", async (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      PIPE.rows = window.OfflineAnalysis.parseCsv(text);
+      $("pipeHint").textContent = `${file.name}: ${PIPE.rows.length} صف جاهز — دوس شغّل`;
+      $("pipeSource").disabled = true;
+    } catch (error) {
+      $("pipeHint").textContent = `مقدرتش أقرا الملف: ${error.message}`;
+    }
+  });
+
+$("pipeSource") &&
+  $("pipeSource").addEventListener("change", () => {
+    PIPE.rows = null;
+    $("pipeFile").value = "";
+  });
+
+window.addEventListener("resize", markScrollableTables);
+
+</script>
+</body>
+</html>
